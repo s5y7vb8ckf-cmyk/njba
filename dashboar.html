@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الإدارية - نادي نجباء</title>
+    <!-- استيراد خط Cairo العربي الفخم والرسمي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- استيراد أيقونات Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;        /* كحلي داكن رسمي */
+            --sky-accent: #0ea5e9;     /* سماوي فخم ونقي */
+            --sky-light: #e0f2fe;      /* خلفية سماوية فاتحة وناعمة */
+            --bg-body: #f8fafc;        /* خلفية عامة هادئة */
+            --card-bg: #ffffff;        /* خلفية بيضاء نقية */
+            --text-main: #1e293b;      /* النصوص الرئيسية */
+            --text-muted: #64748b;     /* النصوص الفرعية */
+            --border: #e2e8f0;         /* حدود ناعمة */
+            --sidebar-width: 260px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* هيكل لوحة التحكم المتطور */
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* القائمة الجانبية (Sidebar) على اليمين (للابتوب والشاشات الكبيرة) */
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--card-bg);
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            right: 0;
+            top: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 25px 24px;
+            font-size: 18px;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+        }
+
+        .sidebar-brand span.material-icons-round {
+            color: var(--sky-accent);
+            font-size: 26px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 16px;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu li.active a {
+            background-color: var(--sky-light);
+            color: var(--sky-accent);
+        }
+
+        .sidebar-menu a span {
+            font-size: 20px;
+        }
+
+        /* منطقة المحتوى الرئيسي */
+        main {
+            margin-right: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: calc(100% - var(--sidebar-width));
+            padding-bottom: 40px;
+        }
+
+        /* قسم بيانات المشرف الفخم */
+        .admin-welcome-card {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .admin-welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .welcome-text h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .welcome-text p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .update-badge {
+            background: var(--sky-light);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: var(--sky-accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-refresh {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-refresh:hover {
+            background: var(--sky-accent);
+            transform: rotate(180deg);
+        }
+
+        .admin-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-box label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .detail-box span {
+            font-size: 15px;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        /* قسم البحث المتقدم وسجل الطلاب */
+        .students-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.05);
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title span.material-icons-round {
+            color: var(--sky-accent);
+        }
+
+        .search-box-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box-container input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box-container input:focus {
+            border-color: var(--sky-accent);
+        }
+
+        .search-box-container button {
+            background: var(--sky-accent);
+            color: white;
+            border: none;
+            padding: 0 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-box-container button:hover {
+            background: #0284c7;
+        }
+
+        /* تصميم فخم لرسالة الخطأ (لم يتم العثور) */
+        #errorAlert {
+            display: none;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #991b1b;
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-top: 15px;
+            text-align: center;
+            border: 1px solid #fecaca;
+            box-shadow: 0 10px 20px -5px rgba(153, 27, 27, 0.08);
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeInAlert 0.4s ease forwards;
+        }
+
+        /* نتائج البحث وعرض تفاصيل الطالب الديناميكية */
+        #studentResultContainer {
+            display: none;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .student-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .info-item span {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .selection-tabs { display:flex; gap:10px; margin-top:18px; padding:5px; background:var(--bg-body); border:1px solid var(--border); border-radius:14px; }
+        .selection-tab { flex:1; border:0; border-radius:10px; padding:11px 14px; background:transparent; color:var(--text-muted); font-family:inherit; font-weight:800; cursor:pointer; }
+        .selection-tab.active { background:var(--card-bg); color:var(--sky-accent); box-shadow:0 4px 14px rgba(14,165,233,.12); }
+        .team-picker { display:none; margin-top:15px; }
+        .team-picker.active { display:block; }
+        .team-select-row { display:flex; gap:10px; flex-wrap:wrap; }
+        .team-select-row select { flex:1; min-width:220px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--card-bg); font-family:inherit; outline:none; }
+        .team-select-row button,.selection-tools button { border:0; border-radius:10px; padding:10px 15px; font-family:inherit; font-weight:800; cursor:pointer; }
+        .team-select-row button { background:var(--sky-accent); color:#fff; }
+        .selected-students-box { display:none; margin-top:15px; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+        .selection-tools { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:12px; background:var(--bg-body); }
+        .selection-tools strong { margin-left:auto; color:var(--primary); }
+        .selection-tools button { background:var(--card-bg); color:var(--primary); border:1px solid var(--border); }
+        .students-check-list { max-height:320px; overflow:auto; padding:8px; }
+        .student-check-row { display:grid; grid-template-columns:34px minmax(100px,1fr) minmax(150px,2fr); gap:10px; align-items:center; padding:11px 8px; border-bottom:1px solid var(--border); cursor:pointer; }
+        .student-check-row:last-child { border-bottom:0; }
+        .student-check-row input { width:19px; height:19px; accent-color:var(--sky-accent); }
+        .student-check-code { direction:ltr; text-align:right; font-weight:800; color:var(--sky-accent); }
+        .student-check-name { font-weight:700; color:var(--primary); }
+        .team-student-search { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+        .team-student-search input { flex:1; min-width:220px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-family:inherit; outline:none; }
+        .team-student-search input:focus { border-color:var(--sky-accent); }
+        .team-student-search button { border:0; border-radius:12px; padding:0 20px; background:var(--primary); color:#fff; font-family:inherit; font-weight:800; cursor:pointer; }
+        .team-search-results { display:none; margin-top:10px; padding:8px; border:1px solid var(--border); border-radius:12px; background:var(--card-bg); max-height:230px; overflow:auto; }
+        .team-search-result { display:grid; grid-template-columns:minmax(90px,1fr) minmax(140px,2fr) auto; gap:10px; align-items:center; padding:9px; border-bottom:1px solid var(--border); }
+        .team-search-result:last-child { border-bottom:0; }
+        .team-search-result button { border:0; border-radius:9px; padding:8px 12px; background:var(--sky-accent); color:#fff; font-family:inherit; font-weight:800; cursor:pointer; }
+
+        /* نموذج إرسال العملية/النقاط للطالب المحدد */
+        .operation-form-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 15px;
+        }
+
+        .operation-form-box h4 {
+            font-size: 15px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--sky-accent);
+        }
+
+        .btn-submit-op {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit-op:hover {
+            background: var(--sky-accent);
+        }
+
+        /* تصميم فخم لرسالة "تم الرصد بنجاح" */
+        #successAlert {
+            display: none;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #166534;
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-top: 18px;
+            text-align: center;
+            border: 1px solid #bbf7d0;
+            box-shadow: 0 10px 20px -5px rgba(22, 101, 52, 0.1);
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeInAlert 0.4s ease forwards;
+        }
+
+        @keyframes fadeInAlert {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: var(--bg-body);
+            color: var(--primary);
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 800;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: var(--sky-light);
+        }
+
+        .main-footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            padding-top: 10px;
+            font-weight: 600;
+        }
+
+        /* شريط التنقل السفلي الفخم والمفصول (يظهر فقط في الجوال والشاشات الصغيرة) */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary);
+            border-radius: 24px;
+            padding: 12px 20px;
+            box-shadow: 0 15px 30px -5px rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            z-index: 1000;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-item {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-nav-item span.material-icons-round {
+            font-size: 22px;
+        }
+
+        .mobile-nav-item:hover, .mobile-nav-item.active {
+            color: var(--sky-accent);
+        }
+
+        /* التجاوب مع الشاشات والهواتف المحمولة */
+        @media (max-width: 900px) {
+            aside {
+                display: none; /* إخفاء القائمة الجانبية في الجوال */
+            }
+            main {
+                margin-right: 0;
+                width: 100%;
+                padding: 15px;
+                padding-bottom: 100px; /* مساحة فارغة لكي لا يغطي الشريط السفلي المحتوى */
+            }
+            .mobile-bottom-nav {
+                display: flex; /* إظهار الشريط السفلي المفصول في الجوال */
+            }
+        }
+
+
+        input, textarea, select {
+                font-size: 16px !important;
+       }
+
+
+        /* هوية نادي نجباء */
+        :root{
+            --primary:#16178f;
+            --sky-accent:#e91e63;
+            --sky-light:#fff0f5;
+            --orange-accent:#f5a000;
+            --bg-body:#fafafe;
+            --border:#e7e7f3;
+        }
+        aside{background:linear-gradient(180deg,#16178f 0%,#10106f 100%);color:#fff;border-left:0;box-shadow:-8px 0 30px rgba(22,23,143,.14)}
+        .sidebar-brand{color:#fff;border-bottom-color:rgba(255,255,255,.13);padding:22px 18px}
+        .sidebar-brand img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:14px;padding:4px;border:2px solid rgba(245,160,0,.38)}
+        .sidebar-brand span.material-icons-round{display:none}
+        .sidebar-menu a{color:rgba(255,255,255,.78)}
+        .sidebar-menu a:hover,.sidebar-menu li.active a{background:linear-gradient(90deg,rgba(233,30,99,.38),rgba(245,160,0,.18));color:#fff;box-shadow:inset 4px 0 0 var(--orange-accent)}
+        .sidebar-menu li.active a span.material-icons-round,.sidebar-menu a:hover span.material-icons-round{color:var(--orange-accent)}
+        .section-title span.material-icons-round,.update-badge{color:var(--sky-accent)}
+        .update-badge{background:#fff0f5;border-color:#ffd0df}
+        .btn-refresh,.btn-submit-op{background:linear-gradient(135deg,#16178f,#2426b9)}
+        .btn-refresh:hover,.btn-submit-op:hover{background:linear-gradient(135deg,#e91e63,#c91455)}
+        .search-box-container button,.team-select-row button,.team-search-result button{background:linear-gradient(135deg,#e91e63,#d4165b)}
+        .search-box-container button:hover{background:#c91455}
+        .selection-tab.active{color:#e91e63;box-shadow:0 4px 14px rgba(233,30,99,.13)}
+        .student-check-row input{accent-color:#e91e63}
+        .student-check-code{color:#16178f}
+        .mobile-bottom-nav{background:linear-gradient(135deg,#16178f,#10106f);border-color:rgba(245,160,0,.35)}
+        .mobile-nav-item:hover,.mobile-nav-item.active{color:#f5a000}
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- القائمة الجانبية (Sidebar) على اليمين (للابتوب) -->
+        <aside>
+            <div class="sidebar-brand">
+                <img src="logo-nujaba.png" alt="شعار نادي نجباء"><span>بوابة إدارة نجباء</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#"><span class="material-icons-round">dashboard</span> <span>الرئيسية</span></a>
+                </li>
+                <li>
+                    <a href="dashboard.html"><span class="material-icons-round">settings</span> <span>الإعدادات</span></a>
+                </li>
+                <li>
+                    <a onclick="handleLogout()" style="color: #ef4444;"><span class="material-icons-round">logout</span> <span>تسجيل الخروج</span></a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main>
+            <!-- قسم بيانات المشرف الفخم (في الأعلى) -->
+            <div class="admin-welcome-card">
+                <div class="admin-welcome-header">
+                    <div class="welcome-text">
+                        <h2 id="welcomeMsg">مرحباً بك</h2>
+                        <p>لوحة التحكم الإدارية لنادي نجباء للفتيان</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="update-badge">
+                            <span class="material-icons-round" style="font-size: 16px;">update</span>
+                            <span>آخر تحديث: <span id="lastUpdateTime">--:--:--</span></span>
+                        </div>
+                        <button class="btn-refresh" onclick="refreshData()" title="تحديث البيانات فوراً">
+                            <span class="material-icons-round" style="font-size: 18px;">refresh</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="admin-details-grid">
+                    <div class="detail-box">
+                        <label>الكود التعريفي</label>
+                        <span id="dispCode">-</span>
+                    </div>
+                    <div class="detail-box">
+                        <label>اسم المشرف</label>
+                        <span id="dispName">-</span>
+                    </div>
+                    <div class="detail-box">
+                        <label>المرتبة الإدارية</label>
+                        <span id="dispRank">-</span>
+                    </div>
+                    <div class="detail-box">
+                        <label>المرحلة التعليمية</label>
+                        <span id="dispStage">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم البحث عن الطلاب وسجلهم -->
+            <div class="students-section">
+                <div class="section-title">
+                    <span class="material-icons-round">search</span> بحث وإدارة سجلات الطلاب
+                </div>
+                
+                <!-- صندوق البحث -->
+                <div class="search-box-container">
+                    <input type="text" id="searchInput" placeholder="ابحث باسم الطالب أو الكود..." onkeydown="if(event.key === 'Enter') searchStudentInSheet()">
+                    <button onclick="searchStudentInSheet()">بحث</button>
+                </div>
+
+                <div class="selection-tabs">
+                    <button class="selection-tab active" id="singleTab" onclick="setSelectionMode('single')"><span class="material-icons-round" style="vertical-align:middle;font-size:19px">person_search</span> طالب واحد</button>
+                    <button class="selection-tab" id="teamTab" onclick="setSelectionMode('team')"><span class="material-icons-round" style="vertical-align:middle;font-size:19px">groups</span> المجموعات والفرق</button>
+                </div>
+                <div class="team-picker" id="teamPicker">
+                    <div class="team-select-row">
+                        <select id="teamSelect"><option value="">جارٍ تحميل الفرق من الجدول...</option></select>
+                        <button onclick="showSelectedTeam()">عرض طلاب الفريق</button>
+                    </div>
+                    <div class="team-student-search">
+                        <input type="text" id="teamStudentSearchInput" placeholder="ابحث باسم الطالب أو الكود لإضافته..." onkeydown="if(event.key === 'Enter') searchStudentForTeam()">
+                        <button onclick="searchStudentForTeam()"><span class="material-icons-round" style="vertical-align:middle;font-size:19px">person_add</span> بحث وإضافة</button>
+                    </div>
+                    <div class="team-search-results" id="teamSearchResults"></div>
+                    <div class="selected-students-box" id="selectedStudentsBox">
+                        <div class="selection-tools">
+                            <strong id="selectedCount">المحدد: 0 طالب</strong>
+                            <button onclick="toggleAllStudents(true)">تحديد الكل</button>
+                            <button onclick="toggleAllStudents(false)">إلغاء الكل</button>
+                        </div>
+                        <div class="students-check-list" id="studentsCheckList"></div>
+                    </div>
+                </div>
+
+                <!-- رسالة تنبيه الخطأ الفخمة (عذراً، لم يتم العثور على أي طالب...) -->
+                <div id="errorAlert">
+                    <span class="material-icons-round" style="color: #dc2626; font-size: 20px;">error_outline</span>
+                    <span>عذراً، لم يتم العثور على أي طالب بهذا الاسم أو الكود في الجدول.</span>
+                </div>
+
+                <!-- نتيجة البحث وعرض تفاصيل الطالب ونموذج إرسال العملية -->
+                <div id="studentResultContainer">
+                    <div class="student-info-grid" id="studentInfoGrid">
+                        <!-- يتم تعبئة بيانات الطالب ديناميكياً هنا -->
+                    </div>
+
+                    <!-- نموذج إضافة عملية/نقاط للطالب المحدد -->
+                    <div class="operation-form-box">
+                        <h4 id="operationFormTitle">إضافة عملية / نقاط جديدة للطالب</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>نوع العملية / الإجراء</label>
+                                <input type="text" id="opName" placeholder="مثال: مشاركة متميزة / تأخير \غياب \ غياب دون عذر \ حضور ">
+                            </div>
+                            <div class="form-group">
+                                <label>التاريخ</label>
+                                <input type="date" id="opDate">
+                            </div>
+                            <div class="form-group">
+                                <label>نوع النقاط</label>
+                                <select id="opPointsType">
+                                    <option value="">اختر إضافة أو خصم</option>
+                                    <option value="add">إضافة نقاط</option>
+                                    <option value="subtract">خصم نقاط</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>عدد النقاط</label>
+                                <input type="number" id="opPoints" min="1" step="1" inputmode="numeric" placeholder="مثال: 5">
+                            </div>
+                        </div>
+                        <button class="btn-submit-op" id="submitBtn" onclick="submitOperation()">
+                            <span class="material-icons-round" id="submitBtnIcon">send</span>
+                            <span id="submitBtnText">إرسال العملية إلى النظام</span>
+                        </button>
+                        <div id="successAlert">
+                            <span class="material-icons-round" style="color: #15803d; font-size: 20px;">check_circle</span>
+                            <span>تم الرصد بنجاح! تم اعتماد وإرسال العملية إلى نظام نجباء.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سجل آخر بحث (محفوظ في المتصفح) -->
+                <div class="section-title" style="margin-top: 30px;">
+                    <span class="material-icons-round">history</span> سجل آخر بحث
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>رقم القيد / الكود</th>
+                                <th>اسم الطالب</th>
+                                <th>حالة البحث</th>
+                                <th>وقت الاستعلام</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lastSearchTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-muted);">لم يتم إجراء أي بحث بعد</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="main-footer">
+                جميع الحقوق محفوظة © منصة نادي نجباء 2026
+            </div>
+        </main>
+
+    </div>
+
+    <!-- الشريط السفلي الفخم والمفصول الخاص بالجوال (Mobile Bottom Navbar) -->
+    <nav class="mobile-bottom-nav">
+        <button class="mobile-nav-item active" onclick="refreshData()">
+            <span class="material-icons-round">dashboard</span>
+            <span>الرئيسية</span>
+        </button>
+<button class="mobile-nav-item" onclick="window.location.href='dashboard.html';">
+    <span class="material-icons-round">emoji_events</span>
+    <span>الدوري</span>
+</button>
+   <button class="mobile-nav-item" onclick="window.location.href='dashboard.html';">
+    <span class="material-icons-round">settings</span>
+    <span>الإعدادات</span>
+
+        <button class="mobile-nav-item" onclick="handleLogout()" style="color: #fca5a5;">
+            <span class="material-icons-round">logout</span>
+            <span>خروج</span>
+        </button>
+    </nav>
+
+    <script>
+        let currentSupervisor = null;
+        let activeStudentCode = "";
+        let csvHeaders = [];
+        let allStudentsRows = [];
+        let selectionMode = 'single';
+        let teamColumnIndex = -1;
+
+        // روابط جوجل شيت
+        const studentsCSVUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=0&single=true&output=csv';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzOSqR7ld_Had9KSQZeLw-MxFy1CMTcvyJs7tTQSzH-Rb3lmUyJQ8EPgG_vpDGoKERI/exec';
+
+        function checkAuth() {
+            const data = localStorage.getItem('nujaba_currentSupervisor');
+            if (!data) {
+                window.location.href = 'hdk.html';
+                return;
+            }
+            currentSupervisor = JSON.parse(data);
+            updateUIWithData();
+            
+            // تعيين تاريخ اليوم افتراضياً في حقل التاريخ
+            const today = new Date().toISOString().split('T')[0];
+            const dateField = document.getElementById('opDate');
+            if (dateField) dateField.value = today;
+
+            // استرجاع وعرض آخر بحث محفوظ في المتصفح تلقائياً عند فتح الصفحة
+            loadLastSearchFromLocalStorage();
+            loadStudentsAndTeams();
+        }
+
+        function updateUIWithData() {
+            if (!currentSupervisor) return;
+
+            document.getElementById('welcomeMsg').textContent = `مرحباً بك، ${currentSupervisor.name}`;
+            document.getElementById('dispCode').textContent = currentSupervisor.code;
+            document.getElementById('dispName').textContent = currentSupervisor.name;
+            document.getElementById('dispRank').textContent = currentSupervisor.rank;
+            document.getElementById('dispStage').textContent = currentSupervisor.stage;
+
+            const now = new Date();
+            document.getElementById('lastUpdateTime').textContent = now.toLocaleTimeString('ar-SA');
+        }
+
+        function refreshData() {
+            updateUIWithData();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('nujaba_currentSupervisor');
+            window.location.href = 'hdk.html';
+        }
+
+        // تحليل ملف الـ CSV
+        function parseStudentsCSV(text) {
+            const rows = [];
+            let row = [], cell = '', quoted = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i], next = text[i + 1];
+                if (char === '"' && quoted && next === '"') { cell += '"'; i++; }
+                else if (char === '"') quoted = !quoted;
+                else if (char === ',' && !quoted) { row.push(cell.trim()); cell = ''; }
+                else if ((char === '\n' || char === '\r') && !quoted) {
+                    if (char === '\r' && next === '\n') i++;
+                    row.push(cell.trim());
+                    if (row.some(value => value !== '')) rows.push(row);
+                    row = []; cell = '';
+                } else cell += char;
+            }
+            if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
+            csvHeaders = (rows.shift() || []).map(value => value.replace(/^\uFEFF/, '').trim());
+            return rows;
+        }
+
+        // دالة عرض بيانات الطالب في واجهة النتائج
+        function displayStudentCard(foundRow) {
+            const resultContainer = document.getElementById('studentResultContainer');
+            const infoGrid = document.getElementById('studentInfoGrid');
+
+            activeStudentCode = foundRow[0]; // العمود الأول كود الطالب
+
+            if (infoGrid) {
+                infoGrid.innerHTML = '';
+                [foundRow[0], foundRow[2]].forEach((value, index) => {
+                    const labelName = index === 0 ? 'رقم الطالب / الكود' : 'اسم الطالب';
+                    infoGrid.innerHTML += `
+                        <div class="info-item">
+                            <label>${labelName}</label>
+                            <span>${value || '-'}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            if (resultContainer) {
+                resultContainer.style.display = 'block';
+            }
+            
+            const successAlert = document.getElementById('successAlert');
+            if (successAlert) {
+                successAlert.style.display = 'none';
+            }
+        }
+
+        function normalizeArabic(value) {
+            return String(value || '').trim().toLowerCase()
+                .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+                .replace(/[ؤ]/g, 'و').replace(/[ئ]/g, 'ي').replace(/[ًٌٍَُِّْـ]/g, '')
+                .replace(/[^\u0600-\u06FFa-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function levenshteinDistance(a, b) {
+            a = normalizeArabic(a); b = normalizeArabic(b);
+            const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    matrix[i][j] = b[i - 1] === a[j - 1] ? matrix[i - 1][j - 1] : Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        function fuzzyNameScore(name, query) {
+            const cleanName = normalizeArabic(name), cleanQuery = normalizeArabic(query);
+            if (!cleanName || !cleanQuery) return -1;
+            if (cleanName === cleanQuery) return 100;
+            if (cleanName.includes(cleanQuery)) return 95 - Math.abs(cleanName.length - cleanQuery.length);
+            const nameWords = cleanName.split(' '), queryWords = cleanQuery.split(' ');
+            let matched = 0, totalDistance = 0;
+            for (const qWord of queryWords) {
+                let best = Infinity;
+                for (const nWord of nameWords) best = Math.min(best, levenshteinDistance(nWord, qWord));
+                const allowed = Math.max(1, Math.floor(qWord.length * 0.34));
+                if (best <= allowed) { matched++; totalDistance += best; }
+            }
+            if (matched === queryWords.length) return 80 - totalDistance;
+            const fullDistance = levenshteinDistance(cleanName, cleanQuery);
+            const allowedFull = Math.max(1, Math.floor(cleanQuery.length * 0.28));
+            return fullDistance <= allowedFull ? 70 - fullDistance : -1;
+        }
+
+        function studentMatchScore(row, query) {
+            const code = normalizeArabic(row[0]);
+            const cleanQuery = normalizeArabic(query);
+            if (code === cleanQuery) return 120;
+            if (code.includes(cleanQuery)) return 110;
+            return fuzzyNameScore(row[2], cleanQuery);
+        }
+
+        function detectTeamColumn() {
+            return csvHeaders.findIndex(header => {
+                const name = normalizeArabic(header);
+                return name.includes('فريق') || name.includes('فرق') || name.includes('مجموع') || name.includes('فرقه');
+            });
+        }
+
+        async function loadStudentsAndTeams(force = false) {
+            if (allStudentsRows.length && !force) return allStudentsRows;
+            const response = await fetch(studentsCSVUrl, { cache: 'no-store' });
+            if (!response.ok) throw new Error('تعذر تحميل جدول الطلاب');
+            allStudentsRows = parseStudentsCSV(await response.text());
+            teamColumnIndex = detectTeamColumn();
+            renderTeamOptions();
+            return allStudentsRows;
+        }
+
+        function renderTeamOptions() {
+            const select = document.getElementById('teamSelect');
+            if (!select) return;
+            if (teamColumnIndex < 0) {
+                select.innerHTML = '<option value="">لم يتم العثور على عمود باسم الفريق أو المجموعة</option>';
+                return;
+            }
+            const teams = [...new Set(allStudentsRows.map(row => (row[teamColumnIndex] || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b,'ar'));
+            select.innerHTML = '<option value="">اختر الفريق...</option>' + teams.map(team => `<option value="${escapeHtml(team)}">${escapeHtml(team)}</option>`).join('');
+        }
+
+        function setSelectionMode(mode) {
+            selectionMode = mode;
+            document.getElementById('singleTab').classList.toggle('active', mode === 'single');
+            document.getElementById('teamTab').classList.toggle('active', mode === 'team');
+            document.getElementById('teamPicker').classList.toggle('active', mode === 'team');
+            document.querySelector('.search-box-container').style.display = mode === 'single' ? 'flex' : 'none';
+            document.getElementById('operationFormTitle').textContent = mode === 'single' ? 'إضافة عملية / نقاط جديدة للطالب' : 'إضافة العملية / النقاط للطلاب المحددين';
+            if (mode === 'team') {
+                activeStudentCode = '';
+                document.getElementById('studentResultContainer').style.display = 'block';
+                document.getElementById('studentInfoGrid').innerHTML = '<div class="info-item"><label>طريقة الإضافة</label><span>اختر فريقاً ثم راجع الطلاب المحددين</span></div>';
+            } else {
+                document.getElementById('selectedStudentsBox').style.display = 'none';
+                document.getElementById('studentResultContainer').style.display = activeStudentCode ? 'block' : 'none';
+            }
+        }
+
+        function showSelectedTeam() {
+            const team = document.getElementById('teamSelect').value;
+            const box = document.getElementById('selectedStudentsBox');
+            const list = document.getElementById('studentsCheckList');
+            if (!team) { alert('يرجى اختيار الفريق أولاً.'); return; }
+            const members = allStudentsRows.filter(row => (row[teamColumnIndex] || '').trim() === team);
+            list.innerHTML = members.map(row => `<label class="student-check-row"><input type="checkbox" class="team-student-check" data-code="${escapeHtml(row[0])}" checked onchange="updateSelectedCount()"><span class="student-check-code">${escapeHtml(row[0] || '-')}</span><span class="student-check-name">${escapeHtml(row[2] || '-')}</span></label>`).join('') || '<div style="padding:18px;text-align:center;color:var(--text-muted)">لا يوجد طلاب في هذا الفريق</div>';
+            box.style.display = 'block';
+            updateSelectedCount();
+        }
+
+        function searchStudentForTeam() {
+            const input = document.getElementById('teamStudentSearchInput');
+            const resultsBox = document.getElementById('teamSearchResults');
+            const query = normalizeArabic(input.value);
+            if (!query) { alert('اكتب اسم الطالب أو الكود للبحث.'); return; }
+            const matches = allStudentsRows.map(row => ({ row, score: studentMatchScore(row, query) }))
+                .filter(item => item.score >= 0).sort((a, b) => b.score - a.score).slice(0, 30).map(item => item.row);
+            resultsBox.style.display = 'block';
+            resultsBox.innerHTML = matches.length ? matches.map(row => {
+                const alreadyAdded = !!document.querySelector(`.team-student-check[data-code="${cssEscape(row[0])}"]`);
+                return `<div class="team-search-result"><span class="student-check-code">${escapeHtml(row[0] || '-')}</span><span class="student-check-name">${escapeHtml(row[2] || '-')}</span><button type="button" ${alreadyAdded ? 'disabled style="opacity:.55"' : ''} onclick="addStudentToSelection('${escapeJs(row[0])}','${escapeJs(row[2])}',this)">${alreadyAdded ? 'مضاف' : 'إضافة'}</button></div>`;
+            }).join('') : '<div style="padding:12px;text-align:center;color:var(--text-muted)">لم يتم العثور على طالب بهذا الاسم أو الكود</div>';
+        }
+
+        function addStudentToSelection(code, name, button) {
+            if (!code || document.querySelector(`.team-student-check[data-code="${cssEscape(code)}"]`)) return;
+            const box = document.getElementById('selectedStudentsBox');
+            const list = document.getElementById('studentsCheckList');
+            const empty = list.querySelector('[data-empty-list]');
+            if (empty) empty.remove();
+            list.insertAdjacentHTML('beforeend', `<label class="student-check-row"><input type="checkbox" class="team-student-check" data-code="${escapeHtml(code)}" checked onchange="updateSelectedCount()"><span class="student-check-code">${escapeHtml(code)}</span><span class="student-check-name">${escapeHtml(name || '-')}</span></label>`);
+            box.style.display = 'block';
+            button.disabled = true;
+            button.style.opacity = '.55';
+            button.textContent = 'مضاف';
+            updateSelectedCount();
+        }
+
+        function cssEscape(value) {
+            return window.CSS && CSS.escape ? CSS.escape(String(value || '')) : String(value || '').replace(/["\\]/g, '\\$&');
+        }
+
+        function escapeJs(value) {
+            return String(value || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/[\r\n]/g, ' ');
+        }
+
+        function toggleAllStudents(checked) {
+            document.querySelectorAll('.team-student-check').forEach(input => input.checked = checked);
+            updateSelectedCount();
+        }
+
+        function getSelectedStudentCodes() {
+            return [...document.querySelectorAll('.team-student-check:checked')].map(input => input.dataset.code).filter(Boolean);
+        }
+
+        function updateSelectedCount() {
+            document.getElementById('selectedCount').textContent = `المحدد: ${getSelectedStudentCodes().length} طالب`;
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+        }
+
+        // تحميل وحفظ آخر بحث في الـ localStorage
+        function saveLastSearchToLocalStorage(searchData) {
+            localStorage.setItem('nujaba_adminLastSearch', JSON.stringify(searchData));
+        }
+
+        function loadLastSearchFromLocalStorage() {
+            const saved = localStorage.getItem('nujaba_adminLastSearch');
+            if (!saved) return;
+            
+            try {
+                const data = JSON.parse(saved);
+                const lastSearchBody = document.getElementById('lastSearchTableBody');
+                
+                if (lastSearchBody) {
+                    if (data.isFound) {
+                        lastSearchBody.innerHTML = `
+                            <tr>
+                                <td><strong>${data.code}</strong></td>
+                                <td>${data.name}</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">تم العثور بنجاح</span></td>
+                                <td>${data.time}</td>
+                            </tr>
+                        `;
+                    } else {
+                        lastSearchBody.innerHTML = `
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #ef4444; font-weight: 700;">
+                                    لم يتم العثور على نتائج للبحث: "${data.query}" (${data.time})
+                                </td>
+                            </tr>
+                        `;
+                    }
+                }
+            } catch (e) {
+                console.error("خطأ في قراءة آخر بحث من المتصفح");
+            }
+        }
+
+        // دالة البحث الشاملة في الجدول
+        async function searchStudentInSheet() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const lastSearchBody = document.getElementById('lastSearchTableBody');
+            const errorAlert = document.getElementById('errorAlert');
+            const successAlert = document.getElementById('successAlert');
+            
+            // إخفاء التنبيهات السابقة عند بدء البحث الجديد
+            if (errorAlert) errorAlert.style.display = 'none';
+            if (successAlert) successAlert.style.display = 'none';
+            
+            if (!query) {
+                if (errorAlert) {
+                    errorAlert.querySelector('span:nth-child(2)').textContent = 'يرجى إدخال اسم الطالب أو الكود للبحث.';
+                    errorAlert.style.display = 'flex';
+                }
+                return;
+            }
+
+            try {
+                const rows = await loadStudentsAndTeams(true);
+
+                const rankedMatches = rows.map(row => ({ row, score: studentMatchScore(row, query) })).filter(item => item.score >= 0).sort((a, b) => b.score - a.score);
+                const foundRow = rankedMatches.length ? rankedMatches[0].row : null;
+
+                const currentTimeStr = new Date().toLocaleTimeString('ar-SA');
+
+                if (foundRow) {
+                    displayStudentCard(foundRow);
+                    const studentName = foundRow[2] || query;
+
+                    // تحديث الجدول وحفظه في المتصفح
+                    if (lastSearchBody) {
+                        lastSearchBody.innerHTML = `
+                            <tr>
+                                <td><strong>${activeStudentCode}</strong></td>
+                                <td>${studentName}</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">تم العثور بنجاح</span></td>
+                                <td>${currentTimeStr}</td>
+                            </tr>
+                        `;
+                    }
+
+                    saveLastSearchToLocalStorage({
+                        isFound: true,
+                        code: activeStudentCode,
+                        name: studentName,
+                        time: currentTimeStr,
+                        fullRow: foundRow
+                    });
+
+                } else {
+                    // إظهار رسالة الخطأ الفخمة بدلاً من الـ alert التقليدي
+                    const resultContainer = document.getElementById('studentResultContainer');
+                    if (resultContainer) {
+                        resultContainer.style.display = 'none';
+                    }
+
+                    if (errorAlert) {
+                        errorAlert.querySelector('span:nth-child(2)').textContent = 'عذراً، لم يتم العثور على أي طالب بهذا الاسم أو الكود في الجدول.';
+                        errorAlert.style.display = 'flex';
+                    }
+
+                    if (lastSearchBody) {
+                        lastSearchBody.innerHTML = `
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #ef4444; font-weight: 700;">
+                                    لم يتم العثور على نتائج للبحث: "${query}" (${currentTimeStr})
+                                </td>
+                            </tr>
+                        `;
+                    }
+
+                    saveLastSearchToLocalStorage({
+                        isFound: false,
+                        query: query,
+                        time: currentTimeStr
+                    });
+                }
+            } catch (error) {
+                if (errorAlert) {
+                    errorAlert.querySelector('span:nth-child(2)').textContent = 'حدث خطأ أثناء الاتصال بجدول الطلاب. تأكد من صحة الرابط أو اتصال الإنترنت.';
+                    errorAlert.style.display = 'flex';
+                }
+            }
+        }
+
+        // دالة إرسال العملية/النقاط مع تأثير التحميل الفخم ورسالة "تم الرصد بنجاح"
+        async function submitOperation() {
+            const operationText = document.getElementById('opName').value.trim();
+            const operationDate = document.getElementById('opDate').value;
+            const pointsType = document.getElementById('opPointsType').value;
+            const pointsInput = document.getElementById('opPoints').value.trim();
+            const pointsNumber = Math.abs(Number(pointsInput));
+            const operationPoints = pointsType === 'subtract' ? -pointsNumber : pointsNumber;
+            const alertBox = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnIcon = document.getElementById('submitBtnIcon');
+            const btnText = document.getElementById('submitBtnText');
+
+            if (errorAlert) errorAlert.style.display = 'none';
+
+            const targetCodes = selectionMode === 'team' ? getSelectedStudentCodes() : [activeStudentCode].filter(Boolean);
+            if (!targetCodes.length) {
+                alert(selectionMode === 'team' ? 'يرجى اختيار فريق وتحديد طالب واحد على الأقل.' : 'يرجى تحديد الطالب أولاً عبر البحث في الجدول.');
+                return;
+            }
+
+            if (!operationText || !operationDate || !pointsType || !pointsInput || !Number.isFinite(pointsNumber) || pointsNumber <= 0) {
+                alert('يرجى اختيار إضافة أو خصم، ثم كتابة عدد نقاط صحيح أكبر من صفر.');
+                return;
+            }
+
+            // تفعيل حالة التحميل الفخمة والرسمية على الزر
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.8";
+            btnIcon.textContent = "hourglass_top";
+            btnIcon.style.animation = "spin 1.5s linear infinite";
+            btnText.textContent = "جارٍ معالجة ورصد العملية...";
+            if (alertBox) alertBox.style.display = 'none';
+
+            try {
+                for (const studentCode of targetCodes) {
+                    await fetch(scriptURL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'addOperation', studentCode, date:operationDate, operation:operationText, points:operationPoints, pointsType, supervisorCode:currentSupervisor?.code || '', supervisorName:currentSupervisor?.name || '' }) });
+                }
+
+                // محاكاة استجابة رسمية فائقة السلاسة
+                setTimeout(() => {
+                    // إعادة الزر لوضعه الطبيعي
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = "1";
+                    btnIcon.textContent = "send";
+                    btnIcon.style.animation = "none";
+                    btnText.textContent = "إرسال العملية إلى النظام";
+
+                    // إظهار رسالة النجاح الفخمة والرسمية
+                    if (alertBox) {
+                        alertBox.querySelector('span:nth-child(2)').textContent = targetCodes.length > 1 ? `تم الرصد بنجاح لـ ${targetCodes.length} طالب من الفريق المحدد.` : 'تم الرصد بنجاح! تم اعتماد وإرسال العملية إلى النظام.';
+                        alertBox.style.display = 'flex';
+                    }
+
+                    // تفريغ الحقول بعد النجاح
+                    document.getElementById('opName').value = '';
+                    document.getElementById('opPoints').value = '';
+                    document.getElementById('opPointsType').value = '';
+
+                    // إخفاء الرسالة تلقائياً بعد 5 ثوانٍ بشكل راقي
+                    setTimeout(() => {
+                        if (alertBox) alertBox.style.display = 'none';
+                    }, 5000);
+
+                }, 800);
+
+            } catch (error) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = "1";
+                btnIcon.textContent = "send";
+                btnIcon.style.animation = "none";
+                btnText.textContent = "إرسال العملية إلى النظام";
+                alert('حدث خطأ أثناء إرسال العملية إلى ورقة العمليات.');
+            }
+        }
+
+        window.onload = checkAuth;
+    </script>
+    
+    <style>
+        /* إضافة حركة دوران لأيقونة التحميل الفخمة */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+</body>
+</html>

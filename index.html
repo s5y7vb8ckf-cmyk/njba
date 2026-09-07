@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#15158f">
+  <title>تسجيل دخول الطلاب | نادي نجباء</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#15158f;--accent:#e91964;--gold:#f5a000;--primary-dark:#10106f;--primary-soft:#f2f1ff;--ink:#172033;--muted:#64748b;--line:#dce7ef;--surface:#fff;--danger:#b42318;--success:#067647}
+    *{box-sizing:border-box}html{min-height:100%}body{margin:0;min-height:100vh;min-height:100dvh;font-family:"Cairo",Arial,sans-serif;color:var(--ink);background:#f7f6ff;display:grid;place-items:center;padding:24px;overflow-x:hidden}
+    body:before,body:after{content:"";position:fixed;border-radius:999px;filter:blur(4px);pointer-events:none;z-index:-1}body:before{width:520px;height:520px;right:-180px;top:-220px;background:rgba(2,132,199,.14)}body:after{width:430px;height:430px;left:-170px;bottom:-190px;background:rgba(14,165,233,.12)}
+    .shell{width:min(1020px,100%);min-height:610px;background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.96);border-radius:30px;box-shadow:0 25px 70px rgba(15,61,86,.13);overflow:hidden;display:grid;grid-template-columns:1.02fr .98fr;backdrop-filter:blur(14px)}
+    .intro{position:relative;background:linear-gradient(145deg,#10106f 0%,#15158f 52%,#e91964 78%,#f5a000 135%);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;isolation:isolate;overflow:hidden}.intro:before{content:"";position:absolute;width:360px;height:360px;border:70px solid rgba(255,255,255,.07);border-radius:50%;left:-150px;bottom:-180px;z-index:-1}.intro:after{content:"";position:absolute;width:180px;height:180px;border:45px solid rgba(255,255,255,.06);border-radius:50%;right:-80px;top:-85px;z-index:-1}
+    .brand{display:flex;align-items:center;gap:13px}.brand-mark{width:72px;height:72px;border:1px solid rgba(255,255,255,.32);background:#fff;border-radius:18px;display:grid;place-items:center;overflow:hidden;padding:5px}.brand-mark img{width:100%;height:100%;object-fit:contain;display:block}.brand h1{font-size:20px;margin:0;font-weight:800}.brand p{font-size:12px;margin:2px 0 0;color:#fff1d6}
+    .intro-copy h2{font-size:35px;line-height:1.45;margin:0 0 15px;font-weight:800}.intro-copy p{font-size:15px;line-height:2;margin:0;color:#fff7e8;max-width:410px}.features{display:flex;gap:10px;flex-wrap:wrap;margin-top:27px}.feature{font-size:12px;font-weight:600;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+    .intro-footer{font-size:11px;color:#ffe9c2}.login-side{background:var(--surface);padding:56px;display:flex;align-items:center}.login-wrap{width:100%;max-width:390px;margin:auto}.mobile-brand{display:none}.eyebrow{color:var(--primary-dark);font-size:12px;font-weight:800;letter-spacing:.2px;margin-bottom:7px}.login-wrap h2{font-size:27px;margin:0 0 7px;font-weight:800}.sub{margin:0 0 30px;color:var(--muted);font-size:13px;line-height:1.8}
+    .field{margin-bottom:17px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}.input-box{position:relative}.input-box input{width:100%;height:54px;border:1px solid var(--line);border-radius:14px;background:#f8fbfd;padding:0 47px 0 15px;color:var(--ink);font:600 15px "Cairo";outline:0;transition:.2s}.input-box input:focus{background:#fff;border-color:#e91964;box-shadow:0 0 0 4px rgba(233,25,100,.10)}.input-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#7b91a2;pointer-events:none}.toggle{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;background:transparent;color:#6b7f8d;cursor:pointer;border-radius:10px;display:grid;place-items:center}.toggle:hover{background:var(--primary-soft)}
+    .remember{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);margin:4px 0 22px;cursor:pointer;width:max-content}.remember input{width:17px;height:17px;accent-color:var(--primary)}
+    .submit{width:100%;height:55px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--primary-dark),var(--primary) 68%,var(--accent));color:#fff;font:700 15px "Cairo";cursor:pointer;box-shadow:0 11px 24px rgba(21,21,143,.21);transition:.2s;display:flex;align-items:center;justify-content:center;gap:10px}.submit:hover{transform:translateY(-1px);box-shadow:0 14px 27px rgba(21,21,143,.26)}.submit:disabled{cursor:not-allowed;opacity:.72;transform:none}.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.38);border-top-color:#fff;border-radius:50%;display:none;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .alert{display:none;border-radius:12px;padding:11px 13px;margin:0 0 17px;font-size:12px;font-weight:600;line-height:1.7}.alert.error{display:block;color:var(--danger);background:#fef3f2;border:1px solid #fecdca}.alert.success{display:block;color:var(--success);background:#ecfdf3;border:1px solid #abefc6}.alert.info{display:block;color:#11117d;background:#fff3f7;border:1px solid #ffc3d9}.supervisor-link{width:100%;height:52px;margin-top:12px;border:1px solid #dedcf5;border-radius:14px;background:#fbfaff;color:#242477;text-decoration:none;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;transition:.2s}.supervisor-link:hover{background:var(--primary-soft);border-color:#f3a6c2;color:var(--primary-dark);transform:translateY(-1px)}.supervisor-link svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.login-separator{display:flex;align-items:center;gap:10px;margin:17px 0 0;color:#9aabb5;font-size:10px}.login-separator::before,.login-separator::after{content:"";height:1px;background:#e3edf2;flex:1}.privacy{display:flex;justify-content:center;align-items:center;gap:7px;color:#8595a2;font-size:11px;margin-top:18px}.privacy svg{width:14px}
+    @media(max-width:820px){body{padding:0;background:#fff;display:block}.shell{display:block;min-height:100dvh;border:0;border-radius:0;box-shadow:none}.intro{display:none}.login-side{min-height:100dvh;padding:32px 22px}.login-wrap{max-width:440px}.mobile-brand{display:flex;align-items:center;gap:11px;margin-bottom:56px}.mobile-brand .brand-mark{background:#fff;color:var(--primary-dark);border-color:#e5e7eb;width:66px;height:66px;padding:4px}.mobile-brand .brand-mark img{width:100%;height:100%;object-fit:contain}.mobile-brand h1{font-size:17px;margin:0}.mobile-brand p{font-size:11px;color:var(--muted);margin:1px 0 0}.login-wrap h2{font-size:24px}}
+    @media(max-width:390px){.login-side{padding:25px 18px}.mobile-brand{margin-bottom:42px}.input-box input,.submit{height:52px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="intro" aria-label="تعريف المنصة">
+      <div class="brand">
+        <div class="brand-mark"><img src="logo-nujaba.png" alt="شعار نادي نجباء للفتيان"></div>
+        <div><h1>نادي نجباء</h1><p>بوابة الطلاب الرسمية</p></div>
+      </div>
+      <div class="intro-copy">
+        <h2>تابع إنجازك<br>من مكان واحد</h2>
+        <p>ادخل إلى حسابك للاطلاع على الحضور والغياب والنقاط وسجل العمليات الخاص بك.</p>
+        <div class="features"><span class="feature">سجل الحضور</span><span class="feature">النقاط</span><span class="feature">نسبة الالتزام</span></div>
+      </div>
+      <div class="intro-footer">جميع البيانات تعرض للطالب المسجل فقط</div>
+    </section>
+
+    <section class="login-side">
+      <div class="login-wrap">
+        <div class="mobile-brand">
+          <div class="brand-mark"><img src="logo-nujaba.png" alt="شعار نادي نجباء للفتيان"></div>
+          <div><h1>نادي نجباء</h1><p>بوابة الطلاب الرسمية</p></div>
+        </div>
+        <div class="eyebrow">تسجيل الدخول</div>
+        <h2>مرحبًا بعودتك</h2>
+        <p class="sub">أدخل كود الطالب وكلمة السر المسجلين في النظام.</p>
+        <div id="alertBox" class="alert" role="alert" aria-live="polite"></div>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="studentCode">كود الطالب</label>
+            <div class="input-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="9" cy="11" r="2"/><path d="M6.8 16c.5-1.5 1.3-2.2 2.2-2.2s1.7.7 2.2 2.2M14 10h3M14 14h3"/></svg>
+              <input id="studentCode" type="text" inputmode="numeric" autocomplete="username" placeholder="مثال: 1024" maxlength="30" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="password">كلمة السر</label>
+            <div class="input-box">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v2"/></svg>
+              <input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة السر" maxlength="80" required>
+              <button class="toggle" id="togglePassword" type="button" aria-label="إظهار كلمة السر"><svg width="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button>
+            </div>
+          </div>
+          <label class="remember"><input id="rememberCode" type="checkbox"> تذكر كود الطالب على هذا الجهاز</label>
+          <button id="loginBtn" class="submit" type="submit"><span id="buttonText">دخول إلى حسابي</span><span class="spinner" id="spinner"></span></button>
+        </form>
+        <div class="login-separator"><span>دخول الإدارة</span></div>
+        <a class="supervisor-link" href="hdk.html"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8M17 8h5M19.5 5.5v5"/></svg><span>تسجيل دخول المشرفين</span></a>
+        <div class="privacy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 2.7 8.4 7 10 4.3-1.6 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span>الحقوق محفوظة لنادي نجباء</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STUDENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=0&single=true&output=csv';
+    const DASHBOARD_PAGE = 'dashboard.html';
+    const loginForm = document.getElementById('loginForm');
+    const codeInput = document.getElementById('studentCode');
+    const passwordInput = document.getElementById('password');
+    const rememberInput = document.getElementById('rememberCode');
+    const alertBox = document.getElementById('alertBox');
+    const loginBtn = document.getElementById('loginBtn');
+    const buttonText = document.getElementById('buttonText');
+    const spinner = document.getElementById('spinner');
+
+    const savedStudent = safeJSON(localStorage.getItem('nujaba_studentData'));
+    if (savedStudent && savedStudent.code) location.replace(DASHBOARD_PAGE);
+    const rememberedCode = localStorage.getItem('nujaba_rememberedStudentCode');
+    if (rememberedCode) { codeInput.value = rememberedCode; rememberInput.checked = true; }
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const showing = passwordInput.type === 'text';
+      passwordInput.type = showing ? 'password' : 'text';
+      this.setAttribute('aria-label', showing ? 'إظهار كلمة السر' : 'إخفاء كلمة السر');
+    });
+
+    loginForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const code = normalize(codeInput.value);
+      const password = normalize(passwordInput.value);
+      hideAlert();
+      if (!code || !password) { showAlert('فضلاً أدخل كود الطالب وكلمة السر.', 'error'); return; }
+      setLoading(true);
+      try {
+        const response = await fetch(STUDENTS_CSV_URL + '&t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const text = (await response.text()).replace(/^\uFEFF/, '');
+        const rows = parseCSV(text).filter(row => row.some(cell => normalize(cell) !== ''));
+        if (rows.length < 2) throw new Error('EMPTY_SHEET');
+        const header = rows[0].map(normalizeHeader);
+        const columns = resolveColumns(header);
+        const row = rows.slice(1).find(item => normalize(item[columns.code]) === code);
+        if (!row || normalize(row[columns.password]) !== password) {
+          showAlert('كود الطالب أو كلمة السر غير صحيح.', 'error');
+          passwordInput.value = ''; passwordInput.focus(); return;
+        }
+        const studentData = {
+          code: normalize(row[columns.code]),
+          password: normalize(row[columns.password]),
+          name: normalize(row[columns.name]) || 'الطالب',
+          group: normalize(row[columns.group]) || 'غير محددة',
+          points: normalize(row[columns.points]) || '0',
+          commitment: normalize(row[columns.commitment]).replace('%', '') || '0'
+        };
+        localStorage.setItem('nujaba_studentData', JSON.stringify(studentData));
+        if (rememberInput.checked) localStorage.setItem('nujaba_rememberedStudentCode', studentData.code);
+        else localStorage.removeItem('nujaba_rememberedStudentCode');
+        showAlert('تم تسجيل الدخول بنجاح، جارٍ فتح حسابك…', 'success');
+        setTimeout(() => location.replace(DASHBOARD_PAGE), 450);
+      } catch (error) {
+        console.error(error);
+        showAlert(navigator.onLine ? 'تعذر قراءة بيانات الطلاب الآن. تأكد من نشر الجدول ثم أعد المحاولة.' : 'لا يوجد اتصال بالإنترنت. تحقق من الشبكة ثم أعد المحاولة.', 'error');
+      } finally { setLoading(false); }
+    });
+
+    function resolveColumns(header) {
+      const find = aliases => header.findIndex(title => aliases.some(alias => title.includes(alias)));
+      const pick = (found, fallback) => found >= 0 ? found : fallback;
+      return {
+        code: pick(find(['كودالطالب','رقمالطالب','الكود','الرقم']), 0),
+        password: pick(find(['كلمةالسر','كلمةالمرور','الرقمالسري','password']), 1),
+        name: pick(find(['اسمالطالب','الاسم']), 2),
+        group: pick(find(['المجموعةالقرانية','المجموعة','الحلقة']), 3),
+        points: pick(find(['اجماليالنقاط','النقاط','الرصيد']), 4),
+        commitment: pick(find(['نسبةالالتزام','الالتزام']), 5)
+      };
+    }
+
+    function parseCSV(text) {
+      const rows = []; let row = []; let cell = ''; let quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === '"') { if (quoted && text[i + 1] === '"') { cell += '"'; i++; } else quoted = !quoted; }
+        else if (char === ',' && !quoted) { row.push(cell); cell = ''; }
+        else if ((char === '\n' || char === '\r') && !quoted) { if (char === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+        else cell += char;
+      }
+      if (cell.length || row.length) { row.push(cell); rows.push(row); }
+      return rows;
+    }
+
+    function normalize(value) { return String(value == null ? '' : value).trim(); }
+    function normalizeHeader(value) { return normalize(value).toLowerCase().replace(/[\s_\-أإآ]/g, match => match === 'أ' || match === 'إ' || match === 'آ' ? 'ا' : '').replace(/[ة]/g, 'ه').replace(/[ى]/g, 'ي'); }
+    function safeJSON(value) { try { return JSON.parse(value); } catch (_) { return null; } }
+    function showAlert(message, type) { alertBox.textContent = message; alertBox.className = 'alert ' + type; }
+    function hideAlert() { alertBox.textContent = ''; alertBox.className = 'alert'; }
+    function setLoading(active) { loginBtn.disabled = active; buttonText.textContent = active ? 'جارٍ التحقق من البيانات…' : 'دخول إلى حسابي'; spinner.style.display = active ? 'block' : 'none'; }
+  </script>
+</body>
+</html>
