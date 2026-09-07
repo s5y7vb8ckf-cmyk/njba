@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#075f91">
+  <title>لوحة الإدارة | نادي نجباء</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#17178f;--blue:#2929a8;--blue2:#e91964;--soft:#f2f1ff;--bg:#f8f8ff;--card:#fff;--ink:#1f2055;--muted:#747493;--line:#e7e4f2;--green:#087a55;--red:#c43232;--amber:#f5a000;--shadow:0 12px 34px rgba(23,23,143,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",Arial,sans-serif;min-height:100vh}button,input,select{font:inherit}
+    .app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+    .sidebar{position:sticky;top:0;height:100vh;background:#fff;border-left:1px solid var(--line);padding:24px 17px;display:flex;flex-direction:column;z-index:20}
+    .brand{display:flex;align-items:center;gap:12px;padding:9px 8px 25px;border-bottom:1px solid #edf2f5}.brand-logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(145deg,#17178f,#e91964);display:grid;place-items:center;color:#fff;box-shadow:0 8px 18px rgba(23,23,143,.22)}.brand-logo svg{width:25px}.brand h1{font-size:17px;margin:0;font-weight:800}.brand p{font-size:11px;color:var(--blue);margin:3px 0 0;font-weight:600}
+    .menu-label{font-size:10px;color:#9aabb6;font-weight:700;margin:24px 11px 8px}.nav{display:grid;gap:6px}.nav button{height:47px;border:1px solid transparent;background:transparent;color:#607483;border-radius:13px;padding:0 13px;display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;font-weight:700;text-align:right}.nav button:hover,.nav button.active{background:var(--soft);border-color:#d2edf9;color:#076c9d}.nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .side-footer{margin-top:auto;padding-top:16px}.connection{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);padding:10px 11px;background:#f8fafb;border-radius:11px}.dot{width:8px;height:8px;border-radius:50%;background:#18a875;box-shadow:0 0 0 4px rgba(24,168,117,.1)}.version{font-size:10px;color:#a0adb6;text-align:center;margin-top:13px}
+    .main{min-width:0;padding:28px clamp(22px,3.4vw,50px) 50px}.content{max-width:1400px;margin:auto}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:25px}.topbar h2{font-size:24px;margin:0;font-weight:800}.topbar p{font-size:12px;color:var(--muted);margin:5px 0 0}.top-actions{display:flex;gap:10px}
+    .btn{border:0;border-radius:12px;min-height:43px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;transition:.2s}.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.btn:hover{transform:translateY(-1px)}.btn-primary{color:#fff;background:linear-gradient(135deg,#17178f,#e91964);box-shadow:0 8px 18px rgba(233,25,100,.18)}.btn-light{color:#526977;background:#fff;border:1px solid var(--line)}.btn-danger{color:#b42318;background:#fff2f1;border:1px solid #ffd0cc}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:19px}.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:0 6px 20px rgba(24,61,83,.045);display:flex;align-items:center;gap:14px}.stat-icon{width:43px;height:43px;flex:0 0 43px;border-radius:13px;display:grid;place-items:center;background:var(--soft);color:var(--blue)}.stat-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8}.stat strong{display:block;font-size:23px;line-height:1;font-weight:800}.stat span{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);overflow:hidden}.panel-head{min-height:75px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line)}.panel-title h3{font-size:16px;margin:0;font-weight:800}.panel-title p{font-size:11px;color:var(--muted);margin:4px 0 0}.tools{display:flex;align-items:center;gap:9px}.search{position:relative;width:min(330px,31vw)}.search svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:18px;fill:none;stroke:#8093a0;stroke-width:1.8}.search input{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:#f8fafb;padding:0 41px 0 12px;outline:0;color:var(--ink);font-size:13px}.search input:focus{background:#fff;border-color:#58b5de;box-shadow:0 0 0 4px rgba(14,165,233,.09)}
+    .table-wrap{overflow:auto;max-height:calc(100vh - 310px);min-height:340px}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:14px 18px;border-bottom:1px solid #eaf0f3;text-align:right;font-size:13px;white-space:nowrap}th{position:sticky;top:0;z-index:2;background:#f6fafc;color:#627784;font-size:11px;font-weight:800}tbody tr{transition:.15s}tbody tr:hover{background:#f7fcff}.student-name{font-weight:700;color:#263c4b}.code{font-family:ui-monospace,monospace;color:#49616f;background:#f2f6f8;border-radius:7px;padding:4px 7px}.group-pill{display:inline-block;padding:5px 10px;border-radius:99px;background:#eef8fd;color:#086b9a;font-size:11px;font-weight:700}.row-actions{display:flex;gap:7px}.icon-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:#597180;display:grid;place-items:center;cursor:pointer}.icon-btn:hover{background:var(--soft);border-color:#bce4f6;color:var(--blue)}.icon-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}.empty{height:310px;text-align:center!important;color:var(--muted)!important}.loading-line{display:inline-flex;align-items:center;gap:9px}.spinner{width:17px;height:17px;border:2px solid #cceaf7;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .table-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 19px;color:var(--muted);font-size:11px;background:#fbfdfe}.status{display:flex;align-items:center;gap:7px}.status .dot{width:7px;height:7px}
+    .backdrop{position:fixed;inset:0;background:rgba(10,31,45,.46);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}.backdrop.open{display:flex}.modal{width:min(610px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:21px;box-shadow:0 30px 80px rgba(10,31,45,.25);animation:pop .22s ease}@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}}
+    .modal-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.modal-head h3{margin:0;font-size:18px}.modal-head p{margin:4px 0 0;color:var(--muted);font-size:11px}.close{width:37px;height:37px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;color:#607583;font-size:20px}.form{padding:21px 22px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field.full{grid-column:1/-1}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.field input{width:100%;height:47px;border:1px solid var(--line);border-radius:11px;background:#f8fafb;padding:0 13px;color:var(--ink);outline:0;font-size:14px}.field input:focus{background:#fff;border-color:#4faed8;box-shadow:0 0 0 4px rgba(14,165,233,.09)}.field input[readonly]{background:#eef3f6;color:#788996;cursor:not-allowed}.hint{font-size:10px;color:var(--muted);margin-top:5px}.form-alert{display:none;margin-bottom:15px;padding:11px 13px;border-radius:11px;font-size:12px;font-weight:600}.form-alert.show{display:block}.form-alert.error{color:#a82424;background:#fff1f0;border:1px solid #ffd0cd}.form-alert.success{color:#08714f;background:#edfcf6;border:1px solid #b8ead8}.form-alert.info{color:#08668f;background:#eff9fe;border:1px solid #c6eaf9}.modal-foot{padding:15px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-start;gap:9px;background:#fbfdfe}
+    .toast{position:fixed;left:24px;bottom:24px;max-width:370px;padding:13px 16px;border-radius:12px;color:#fff;background:#183b50;box-shadow:0 14px 35px rgba(10,31,45,.22);font-size:12px;font-weight:600;z-index:200;opacity:0;transform:translateY(15px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:none}.toast.success{background:#087a55}.toast.error{background:#b52e2e}
+    .mobile-head{display:none}
+    @media(max-width:1050px){.app{grid-template-columns:220px minmax(0,1fr)}.sidebar{padding-inline:13px}.stats{grid-template-columns:repeat(2,1fr)}.main{padding-inline:22px}}
+    @media(max-width:760px){.app{display:block}.sidebar{display:none}.main{padding:0 13px 95px}.mobile-head{display:flex;align-items:center;justify-content:space-between;margin:0 -13px 18px;padding:14px 16px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:15}.mobile-head .brand{padding:0;border:0}.mobile-head .brand-logo{width:39px;height:39px}.mobile-head .brand p{display:none}.topbar{align-items:flex-start;margin-bottom:16px}.topbar h2{font-size:20px}.top-actions .btn-light{display:none}.stats{gap:9px}.stat{padding:14px 11px;gap:10px}.stat-icon{width:38px;height:38px;flex-basis:38px}.stat strong{font-size:19px}.panel-head{align-items:stretch;flex-direction:column}.tools,.search{width:100%}.table-wrap{max-height:none}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.modal{border-radius:18px}.toast{left:13px;right:13px;bottom:15px;max-width:none}.mobile-add{width:42px;height:42px;padding:0}.mobile-add span{display:none}}
+    @media(max-width:430px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(3),.stat:nth-child(4){display:none}.topbar p{max-width:230px}.top-actions{gap:6px}.btn-primary{padding-inline:12px}}
+    .code-tools{display:flex;gap:7px;margin-top:8px}.code-tools button{min-height:31px;padding:0 10px;border:1px solid #cce7f4;border-radius:8px;background:#f1faff;color:#086b9a;font-size:10px;font-weight:800;cursor:pointer}.code-tools button:hover{background:#e1f5fe;border-color:#98d5ef}
+    .card-modal{width:min(520px,100%)}.student-card-wrap{padding:25px}.student-card{position:relative;overflow:hidden;min-height:300px;border-radius:22px;padding:25px;color:#fff;background:linear-gradient(145deg,#10106f 0%,#17178f 58%,#e91964 120%,#f5a000 155%);box-shadow:0 20px 45px rgba(5,69,103,.24)}.student-card::before,.student-card::after{content:"";position:absolute;border-radius:50%;border:42px solid rgba(255,255,255,.055)}.student-card::before{width:220px;height:220px;left:-120px;bottom:-145px}.student-card::after{width:120px;height:120px;right:-70px;top:-85px}.card-brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.18)}.card-brand strong{font-size:17px}.card-brand span{font-size:10px;color:#d8f2ff}.card-badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:9px;padding:6px 9px!important;color:#fff!important}.card-student-name{position:relative;z-index:1;font-size:22px;font-weight:800;margin:24px 0 18px}.card-data{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:10px}.card-item{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 13px}.card-item label{display:block;color:#c7eafb;font-size:9px;margin-bottom:4px}.card-item strong{font-size:14px;word-break:break-word}.card-note{position:relative;z-index:1;font-size:9px;color:#cceafb;margin:16px 0 0}.card-actions{display:flex;gap:9px;padding:0 25px 24px}.card-actions .btn{flex:1}.icon-btn.delete{color:#bd2c2c}.icon-btn.delete:hover{background:#fff1f0;border-color:#ffc8c3;color:#a91f1f}.confirm-modal{width:min(440px,100%)}.confirm-body{padding:25px;text-align:center}.confirm-icon{width:58px;height:58px;margin:0 auto 15px;border-radius:18px;background:#fff0ef;color:#bd2c2c;display:grid;place-items:center}.confirm-icon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8}.confirm-body h3{font-size:18px;margin:0 0 8px}.confirm-body p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}.confirm-student{margin:16px 0 0;padding:12px;border:1px solid #f2d4d1;background:#fff8f7;border-radius:11px;font-size:13px;font-weight:700}.confirm-actions{display:flex;gap:9px;padding:0 25px 24px}.confirm-actions .btn{flex:1}
+    @media print{body *{visibility:hidden!important}#cardModal,#cardModal *{visibility:visible!important}#cardModal{position:absolute!important;inset:0!important;display:block!important;background:#fff!important;padding:15mm!important}#cardModal .card-modal{width:90mm!important;max-width:none!important;margin:auto!important;box-shadow:none!important}#cardModal .modal-head,#cardModal .card-actions{display:none!important}#cardModal .student-card-wrap{padding:0!important}#printableCard{width:90mm!important;min-height:55mm!important;border-radius:5mm!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+    #cardsPrintArea{display:none}
+    .reports-view{display:none}.reports-mode .topbar,.reports-mode .stats,.reports-mode #studentsPanel{display:none}.reports-mode .reports-view{display:block}.report-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.report-head h2{font-size:24px;margin:0}.report-head p{font-size:12px;color:var(--muted);margin:5px 0 0}.report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}.report-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 6px 20px rgba(24,61,83,.045)}.report-stat strong{display:block;font-size:24px;font-weight:800}.report-stat span{display:block;font-size:11px;color:var(--muted);margin-top:5px}.report-stat.danger{background:#fff7f6;border-color:#ffd2ce}.report-stat.danger strong{color:#b42318}.warning-banner{display:none;align-items:center;gap:13px;background:#fff5f3;border:1px solid #ffcfc9;border-right:5px solid #d93333;border-radius:14px;padding:14px 17px;margin-bottom:17px;color:#9f2525}.warning-banner.show{display:flex}.warning-banner svg{width:24px;height:24px;flex:0 0 24px;fill:none;stroke:currentColor;stroke-width:1.9}.warning-banner strong{display:block;font-size:13px}.warning-banner span{display:block;font-size:11px;margin-top:3px;color:#b64a43}.attendance-num{font-weight:800}.attendance-num.good{color:#087a55}.attendance-num.bad{color:#bd2c2c}.attendance-num.late{color:#a76408}.warning-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;font-size:10px;font-weight:800}.warning-pill.danger{background:#fff0ef;color:#b42318;border:1px solid #ffcfc9}.warning-pill.safe{background:#edf9f4;color:#087a55;border:1px solid #c3eadb}.report-tools{display:flex;gap:9px;align-items:center}
+    .report-filters{display:grid;grid-template-columns:minmax(190px,1fr) minmax(190px,1fr) minmax(170px,.8fr);gap:12px;padding:16px 18px;margin-bottom:17px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 20px rgba(24,61,83,.045)}.filter-field label{display:block;font-size:10px;color:var(--muted);font-weight:800;margin-bottom:6px}.filter-field select,.filter-field input{width:100%;height:42px;border:1px solid var(--line);border-radius:10px;background:#f8fafb;color:var(--ink);padding:0 11px;outline:0;font-size:12px}.filter-field select:focus,.filter-field input:focus{background:#fff;border-color:#55afd7;box-shadow:0 0 0 3px rgba(14,165,233,.08)}.filter-field.hidden{display:none}.period-note{display:flex;align-items:end;font-size:11px;color:#607785;padding-bottom:11px}.period-note strong{color:var(--blue);margin-right:4px}
+    @media(max-width:900px){.report-stats{grid-template-columns:repeat(2,1fr)}.report-filters{grid-template-columns:1fr 1fr}.period-note{grid-column:1/-1}}
+    @media(max-width:760px){.report-head{align-items:flex-start}.report-head h2{font-size:20px}.report-tools .btn span{display:none}.report-stats{gap:9px}.report-stat{padding:14px}.report-filters{grid-template-columns:1fr;padding:14px}.period-note{grid-column:auto}}
+    @media print{
+      @page{size:A4 landscape;margin:8mm}
+      body.batch-print #cardModal,body.batch-print #cardModal *{visibility:hidden!important}
+      body.batch-print #cardsPrintArea,body.batch-print #cardsPrintArea *{visibility:visible!important}
+      body.batch-print #cardsPrintArea{display:block!important;position:absolute!important;inset:0!important}
+      .print-page{width:281mm;height:194mm;display:grid;grid-template-columns:repeat(3,90mm);grid-template-rows:repeat(3,61mm);gap:3mm;align-content:center;justify-content:center;break-after:page;page-break-after:always}
+      .print-page:last-child{break-after:auto;page-break-after:auto}
+      .print-card{position:relative;overflow:hidden;width:90mm;height:61mm;border-radius:4mm;padding:6mm;color:#fff;background:linear-gradient(145deg,#10106f 0%,#17178f 62%,#e91964 125%,#f5a000 155%);border:.3mm solid #17178f;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      .print-card-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:3mm;border-bottom:.3mm solid rgba(255,255,255,.25);font-size:3.5mm;font-weight:800}.print-card-head span{font-size:2.3mm;font-weight:600;color:#d7f1ff}
+      .print-card-name{font-size:5mm;font-weight:800;margin:4mm 0 3mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .print-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:2mm}.print-card-item{padding:2mm 2.5mm;border-radius:2mm;background:rgba(255,255,255,.12);border:.2mm solid rgba(255,255,255,.18)}.print-card-item.group{grid-column:1/-1}.print-card-item small{display:block;color:#c7eafb;font-size:2.2mm;margin-bottom:.7mm}.print-card-item strong{display:block;font-size:3.3mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    }
+  </style>
+<style>
+  .operations-view,.points-view{display:none}
+  body.operations-mode .topbar,body.operations-mode .stats,body.operations-mode #studentsPanel,body.operations-mode .reports-view{display:none}
+  body.operations-mode .operations-view{display:block}
+  body.points-mode .topbar,body.points-mode .stats,body.points-mode #studentsPanel,body.points-mode .reports-view{display:none}
+  body.points-mode .points-view{display:block}
+  .rank-badge{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eef5f8;color:#506978;font-weight:800}
+  .rank-badge.first{background:#fff4cf;color:#9a6500;border:1px solid #f4d97f}.rank-badge.second{background:#f1f4f6;color:#53646e;border:1px solid #d6dee3}.rank-badge.third{background:#fff0e8;color:#a55629;border:1px solid #f0c9b2}
+  .points-value{font-size:15px;font-weight:800;color:#076c9d}.operation-positive{color:#087a55;font-weight:800}.operation-negative{color:#bd2c2c;font-weight:800}
+  .date-range{display:grid;grid-template-columns:1fr 1fr;gap:9px}.page-print-area{display:none}
+  @media(max-width:760px){.date-range{grid-template-columns:1fr}.points-view .report-stats{grid-template-columns:1fr 1fr}}
+  @media print{
+    body.report-print #cardModal,body.report-print #cardsPrintArea{display:none!important}
+    body.report-print *{visibility:hidden!important}
+    body.report-print #reportPrintArea,body.report-print #reportPrintArea *{visibility:visible!important}
+    body.report-print #reportPrintArea{display:block!important;position:absolute!important;inset:0!important;color:#111!important;font-family:"Tajawal",Arial,sans-serif}
+    .a4-report{width:100%;direction:rtl}.a4-report-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #17178f;padding-bottom:4mm;margin-bottom:5mm}.a4-report-header h1{font-size:18pt;margin:0}.a4-report-header p{font-size:9pt;margin:2mm 0 0}.a4-report-meta{text-align:left;font-size:8pt}
+    .a4-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-bottom:5mm}.a4-summary div{border:1px solid #ccd9e0;border-radius:2mm;padding:3mm}.a4-summary strong{display:block;font-size:15pt}.a4-summary span{font-size:8pt;color:#555}
+    .a4-table{width:100%;min-width:0;border-collapse:collapse}.a4-table th,.a4-table td{padding:2.2mm;border:1px solid #cbd6dc;font-size:8pt;white-space:normal}.a4-table th{position:static;background:#f2f1ff!important;color:#17178f}.a4-table tr{break-inside:avoid}
+    .a4-report-footer{margin-top:4mm;font-size:7pt;color:#666;text-align:center}
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo-nujaba.png" alt="شعار نادي نجباء" style="width:45px;height:45px;object-fit:contain;background:#fff;border-radius:14px;padding:4px;border:2px solid #f5a000;box-shadow:0 8px 18px rgba(23,23,143,.14)">
+        <div><h1>نادي نجباء</h1><p>لوحة الإدارة الرسمية</p></div>
+      </div>
+      <div class="menu-label">الإدارة</div>
+      <nav class="nav">
+        <button class="active" onclick="switchAdminView('dashboard',this)"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-3H4zM14 7h6V4h-6z"/></svg>نظرة عامة</button>
+        <button onclick="switchAdminView('students',this)"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8M19 8v6M16 11h6"/></svg>إدارة الطلاب</button>
+        <button onclick="openCreateModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>إضافة طالب</button>
+        <button onclick="switchAdminView('reports',this)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>تقارير الحضور والغياب</button>
+        <button onclick="switchAdminView('operations',this)"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M7 3v4M12 10v4M17 17v4"/></svg>عمليات الطلاب</button>
+        <button onclick="switchAdminView('points',this)"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v3a5 5 0 0 1-10 0zM7 6H4v1a4 4 0 0 0 4 4M17 6h3v1a4 4 0 0 1-4 4"/></svg>ترتيب نقاط الطلاب</button>
+      </nav>
+      <div class="side-footer">
+        <div class="connection"><span class="dot"></span><span id="sideStatus">متصل ببيانات الطلاب</span></div>
+        <div class="version">الإصدار الإداري 1.0</div>
+      </div>
+    </aside>
+
+<main class="main">
+  <div class="content">
+    <div class="mobile-head">
+      <div class="brand"><img src="logo-nujaba.png" alt="شعار نادي نجباء" style="width:45px;height:45px;object-fit:contain;background:#fff;border-radius:14px;padding:4px;border:2px solid #f5a000;box-shadow:0 8px 18px rgba(23,23,143,.14)"><div><h1>نادي نجباء</h1><p>لوحة الإدارة</p></div></div>
+      <button class="btn btn-primary mobile-add" onclick="openCreateModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>إضافة</span></button>
+    </div>
+
+    <header class="topbar">
+      <div><h2>لوحة تحكم الطلاب</h2><p>إدارة بيانات الطلاب ومراجعتها من مكان واحد</p></div>
+      <div class="top-actions">
+        <button class="btn btn-light" onclick="printAllStudentCards()"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 18H4V9h16v9h-3M7 14h10v7H7z"/></svg>طباعة بطاقات A4</button>
+        <button class="btn btn-light" onclick="loadStudents()"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>تحديث البيانات</button>
+        <button class="btn btn-primary" onclick="openCreateModal()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>إضافة طالب</button>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8M19 8v6M16 11h6"/></svg></div><div><strong id="totalStudents">0</strong><span>إجمالي الطلاب</span></div></article>
+      <article class="stat"><div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 3v4M16 3v4M4 10h16"/></svg></div><div><strong id="totalGroups">0</strong><span>عدد المجموعات</span></div></article>
+      <article class="stat"><div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16M7 16l3-4 3 2 4-6"/></svg></div><div><strong id="visibleStudents">0</strong><span>النتائج المعروضة</span></div></article>
+      <article class="stat"><div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m9 12 2 2 4-4"/></svg></div><div><strong id="syncLabel">—</strong><span>آخر تحديث</span></div></article>
+    </section>
+
+    <section class="panel" id="studentsPanel">
+      <div class="panel-head">
+        <div class="panel-title"><h3>سجل الطلاب</h3><p>اضغط على زر التعديل لتحديث بيانات أي طالب</p></div>
+        <div class="tools">
+          <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="searchInput" type="search" placeholder="بحث بالاسم أو الكود أو المجموعة"></div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>كود الطالب</th><th>اسم الطالب</th><th>المجموعة</th><th>كلمة السر</th><th>الإجراء</th></tr></thead>
+          <tbody id="studentsBody"><tr><td class="empty" colspan="6"><span class="loading-line"><span class="spinner"></span>جاري جلب بيانات الطلاب…</span></td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-foot"><span id="recordsText">جاري التحميل…</span><span class="status"><span class="dot"></span>بيانات مباشرة من قاعدة بيانات نادي نجباء </span></div>
+    </section>
+
+    <section class="reports-view" id="reportsView">
+      <div class="report-head">
+        <div><h2>تقارير الحضور والغياب</h2><p>ملخص مباشر لكل طالب، ويظهر التحذير عند 5 غيابات أو أكثر</p></div>
+        <div class="report-tools"><button class="btn btn-primary" onclick="printAttendanceReport()"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 18H4V9h16v9h-3M7 14h10v7H7z"/></svg><span>طباعة A4</span></button><button class="btn btn-light" onclick="loadAttendanceReports()"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span>تحديث التقرير</span></button></div>
+      </div>
+      <div class="report-filters">
+        <div class="filter-field"><label for="reportStudentFilter">الطالب</label><select id="reportStudentFilter"><option value="">جميع الطلاب</option></select></div>
+        <div class="filter-field"><label for="reportPeriodFilter">الفترة</label><select id="reportPeriodFilter"><option value="all">كامل السجل</option><option value="today">اليوم</option><option value="yesterday">أمس</option><option value="week">هذا الأسبوع</option><option value="monthCurrent">هذا الشهر</option><option value="year">هذه السنة</option><option value="date">تاريخ محدد</option><option value="month">شهر كامل</option><option value="threeMonths">آخر 3 أشهر</option></select></div>
+        <div class="filter-field hidden" id="dateFilterField"><label for="reportDateFilter">اختر التاريخ</label><input id="reportDateFilter" type="date"></div>
+        <div class="filter-field hidden" id="monthFilterField"><label for="reportMonthFilter">اختر الشهر</label><input id="reportMonthFilter" type="month"></div>
+        <div class="period-note">الفترة المعروضة: <strong id="activePeriodText">كامل السجل</strong></div>
+      </div>
+      <div class="report-stats">
+        <article class="report-stat"><strong id="reportStudents">0</strong><span>طلاب في التقرير</span></article>
+        <article class="report-stat"><strong id="reportAttendance">0</strong><span>إجمالي الحضور</span></article>
+        <article class="report-stat"><strong id="reportAbsence">0</strong><span>إجمالي الغياب</span></article>
+        <article class="report-stat danger"><strong id="reportWarnings">0</strong><span>طلاب عليهم تحذير</span></article>
+      </div>
+      <div class="warning-banner" id="absenceWarning"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4zM12 9v5M12 17h.01"/></svg><div><strong id="warningTitle">تنبيه غياب</strong><span id="warningText"></span></div></div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><h3>سجل الالتزام لكل طالب</h3><p>الغياب بعذر يظهر منفصلًا ولا يدخل ضمن حد التحذير</p></div><div class="tools"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="reportSearch" type="search" placeholder="بحث باسم الطالب أو الكود"></div></div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>#</th><th>الطالب</th><th>الكود</th><th>المجموعة</th><th>حضور</th><th>غياب</th><th>تأخر</th><th>غياب بعذر</th><th>إجمالي العمليات</th><th>الحالة</th></tr></thead>
+          <tbody id="reportsBody"><tr><td class="empty" colspan="10">افتح قسم التقارير لتحميل البيانات.</td></tr></tbody></table>
+        </div>
+        <div class="table-foot"><span id="reportRecordsText">—</span><span class="status"><span class="dot"></span>سجل العمليات المباشر</span></div>
+      </div>
+    </section>
+
+    <section class="operations-view" id="operationsView">
+      <div class="report-head"><div><h2>عمليات الطلاب</h2><p>عرض جميع العمليات أو عمليات طالب واحد خلال فترة تحددها</p></div><div class="report-tools"><button class="btn btn-light" onclick="clearOperationsFilters()">مسح الفلاتر</button><button class="btn btn-primary" onclick="printOperationsReport()"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 18H4V9h16v9h-3M7 14h10v7H7z"/></svg><span>طباعة A4</span></button></div></div>
+      <div class="report-filters">
+        <div class="filter-field"><label for="operationsStudentFilter">الطالب</label><select id="operationsStudentFilter"><option value="">جميع الطلاب</option></select></div>
+        <div class="filter-field"><label>التاريخ من وإلى</label><div class="date-range"><input id="operationsFrom" type="date" aria-label="من تاريخ"><input id="operationsTo" type="date" aria-label="إلى تاريخ"></div></div>
+        <div class="period-note">عدد العمليات: <strong id="operationsCount">0</strong></div>
+      </div>
+      <div class="report-stats">
+        <article class="report-stat"><strong id="opsTotal">0</strong><span>إجمالي العمليات</span></article><article class="report-stat"><strong id="opsAttendance">0</strong><span>عمليات الحضور</span></article><article class="report-stat"><strong id="opsAbsence">0</strong><span>عمليات الغياب</span></article><article class="report-stat"><strong id="opsPoints">0</strong><span>صافي النقاط</span></article>
+      </div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><h3>السجل التفصيلي</h3><p>مرتب من الأحدث إلى الأقدم</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>التاريخ</th><th>الطالب</th><th>الكود</th><th>المجموعة</th><th>العملية</th><th>النقاط</th></tr></thead><tbody id="operationsBody"><tr><td class="empty" colspan="7">افتح صفحة العمليات لتحميل السجل.</td></tr></tbody></table></div><div class="table-foot"><span id="operationsRecordsText">—</span><span class="status"><span class="dot"></span>بيانات العمليات المباشرة</span></div></div>
+    </section>
+
+    <section class="points-view" id="pointsView">
+      <div class="report-head"><div><h2>ترتيب نقاط الطلاب</h2><p>المراكز من الأعلى إلى الأقل حسب رصيد النقاط المسجل</p></div><div class="report-tools"><button class="btn btn-primary" onclick="printPointsReport()"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 18H4V9h16v9h-3M7 14h10v7H7z"/></svg><span>طباعة A4</span></button></div></div>
+      <div class="report-stats"><article class="report-stat"><strong id="highestStudent">—</strong><span>صاحب المركز الأول</span></article><article class="report-stat"><strong id="highestPoints">0</strong><span>أعلى رصيد نقاط</span></article><article class="report-stat"><strong id="lowestStudent">—</strong><span>أقل طالب نقاطًا</span></article><article class="report-stat"><strong id="lowestPoints">0</strong><span>أقل رصيد نقاط</span></article></div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><h3>جدول المراكز</h3><p>يتم الترتيب تلقائيًا عند تحديث بيانات الطلاب</p></div><div class="tools"><div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="pointsSearch" type="search" placeholder="بحث باسم الطالب أو المجموعة"></div></div></div><div class="table-wrap"><table><thead><tr><th>المركز</th><th>الطالب</th><th>الكود</th><th>المجموعة</th><th>النقاط</th></tr></thead><tbody id="pointsBody"><tr><td class="empty" colspan="5">افتح صفحة النقاط لعرض المراكز.</td></tr></tbody></table></div><div class="table-foot"><span id="pointsRecordsText">—</span><span class="status"><span class="dot"></span>ترتيب مباشر من بيانات الطلاب</span></div></div>
+    </section>
+  </div>
+</main>
+
+  </div>
+
+  <div class="backdrop" id="studentModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div><h3 id="modalTitle">إضافة طالب جديد</h3><p id="modalSubtitle">أدخل بيانات الطالب ثم اضغط حفظ</p></div>
+        <button class="close" type="button" onclick="closeModal()" aria-label="إغلاق">×</button>
+      </div>
+      <form id="studentForm" autocomplete="off">
+        <div class="form">
+          <div id="formAlert" class="form-alert"></div>
+          <div class="form-grid">
+            <div class="field"><label for="code">كود الطالب</label><input id="code" name="manual_student_code" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" inputmode="numeric" placeholder="اكتب الكود يدويًا"><div class="code-tools"><button type="button" onclick="generateStudentCode(4)">اختيار رقم من 4 أرقام</button><button type="button" onclick="generateStudentCode(5)">اختيار رقم من 5 أرقام</button></div><div class="hint">يمكنك كتابة الكود يدويًا أو توليده عند الضغط، ولن يُختار رقم مكرر</div></div>
+            <div class="field"><label for="password">كلمة السر</label><input id="password" required autocomplete="new-password" placeholder="أدخل كلمة السر"></div>
+            <div class="field full"><label for="name">اسم الطالب</label><input id="name" required autocomplete="off" placeholder="الاسم الكامل"></div>
+            <div class="field full"><label for="group">المجموعة</label><input id="group" required autocomplete="off" placeholder="اسم أو رقم المجموعة"></div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-primary" id="saveBtn" type="submit">حفظ البيانات</button>
+          <button class="btn btn-light" type="button" onclick="closeModal()">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="backdrop" id="cardModal" role="dialog" aria-modal="true" aria-labelledby="cardModalTitle">
+    <div class="modal card-modal">
+      <div class="modal-head"><div><h3 id="cardModalTitle">بطاقة بيانات الطالب</h3><p>جاهزة للطباعة أو المشاركة</p></div><button class="close" type="button" onclick="closeCardModal()" aria-label="إغلاق">×</button></div>
+      <div class="student-card-wrap">
+        <article class="student-card" id="printableCard">
+          <div class="card-brand"><div><strong>نادي نجباء</strong><span>بطاقة الطالب الرسمية</span></div><span class="card-badge">بيانات الدخول</span></div>
+          <div class="card-student-name" id="cardName">—</div>
+          <div class="card-data">
+            <div class="card-item"><label>كود الطالب</label><strong id="cardCode">—</strong></div>
+            <div class="card-item"><label>كلمة السر</label><strong id="cardPassword">—</strong></div>
+            <div class="card-item" style="grid-column:1/-1"><label>المجموعة</label><strong id="cardGroup">—</strong></div>
+          </div>
+          <p class="card-note">احتفظ بهذه البطاقة في مكان آمن ولا تشارك بيانات الدخول إلا مع صاحب الحساب.</p>
+        </article>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary" type="button" onclick="printStudentCard()"><svg viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 18H4V9h16v9h-3M7 14h10v7H7z"/></svg>طباعة البطاقة</button>
+        <button class="btn btn-light" type="button" onclick="shareStudentCard()"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg>مشاركة</button>
+      </div>
+    </div>
+  </div>
+  <div class="backdrop" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+    <div class="modal confirm-modal">
+      <div class="confirm-body">
+        <div class="confirm-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></div>
+        <h3 id="deleteTitle">تأكيد حذف الطالب</h3>
+        <p>سيتم حذف سجل الطالب من جدول البيانات. راجع الاسم والكود قبل المتابعة.</p>
+        <div class="confirm-student"><span id="deleteStudentName">—</span> — <span id="deleteStudentCode">—</span></div>
+        <div id="deleteAlert" class="form-alert"></div>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn btn-danger" id="confirmDeleteBtn" type="button" onclick="confirmDeleteStudent()">نعم، حذف الطالب</button>
+        <button class="btn btn-light" type="button" onclick="closeDeleteModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+  <div id="cardsPrintArea" aria-hidden="true"></div>
+  <div id="reportPrintArea" class="page-print-area" aria-hidden="true"></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=0&single=true&output=csv';
+    const ATTENDANCE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=271887992&single=true&output=csv';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_csdLB8pr14uWIOCwudpIe-zQK2wRhHJoC4LHNOEIEMPEo_IazVvDrlVVcyct7HVu/exec';
+    const ABSENCE_WARNING_LIMIT = 5;
+    let students = [];
+    let filteredStudents = [];
+    let editingCode = null;
+    let deletingStudent = null;
+    let attendanceReports = [];
+    let attendanceOperations = [];
+    let visibleOperations = [];
+    let pointsRanking = [];
+    let reportsLoaded = false;
+    const body = document.getElementById('studentsBody');
+    const modal = document.getElementById('studentModal');
+    const form = document.getElementById('studentForm');
+    const searchInput = document.getElementById('searchInput');
+
+    document.addEventListener('DOMContentLoaded', loadStudents);
+    searchInput.addEventListener('input', applyFilter);
+    document.getElementById('reportSearch').addEventListener('input', renderAttendanceReports);
+    document.getElementById('reportStudentFilter').addEventListener('change', rebuildAttendanceReports);
+    document.getElementById('reportPeriodFilter').addEventListener('change', handleReportPeriodChange);
+    document.getElementById('reportDateFilter').addEventListener('change', rebuildAttendanceReports);
+    document.getElementById('reportMonthFilter').addEventListener('change', rebuildAttendanceReports);
+    document.getElementById('operationsStudentFilter').addEventListener('change', renderOperations);
+    document.getElementById('operationsFrom').addEventListener('change', renderOperations);
+    document.getElementById('operationsTo').addEventListener('change', renderOperations);
+    document.getElementById('pointsSearch').addEventListener('input', renderPointsRanking);
+    modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+    document.getElementById('cardModal').addEventListener('click', event => { if (event.target.id === 'cardModal') closeCardModal(); });
+    document.getElementById('deleteModal').addEventListener('click', event => { if (event.target.id === 'deleteModal') closeDeleteModal(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeCardModal(); closeDeleteModal(); } });
+
+
+    function ensureScriptUrl() {
+      if (!SCRIPT_URL || SCRIPT_URL.includes('YOUR_NUJABA_STUDENTS_APPS_SCRIPT_URL')) {
+        showToast('ضع رابط Apps Script الخاص بنجباء أولاً', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function switchAdminView(view, button) {
+      document.querySelectorAll('.nav button').forEach(item => item.classList.remove('active'));
+      if (button) button.classList.add('active');
+      document.body.classList.remove('reports-mode','operations-mode','points-mode');
+      if (view === 'reports') document.body.classList.add('reports-mode');
+      if (view === 'operations') document.body.classList.add('operations-mode');
+      if (view === 'points') document.body.classList.add('points-mode');
+      if (view === 'reports') {
+        if (!reportsLoaded) loadAttendanceReports();
+        window.scrollTo({ top:0, behavior:'smooth' });
+      } else if (view === 'operations') {
+        if (!reportsLoaded) loadAttendanceReports().then(renderOperations); else renderOperations();
+        window.scrollTo({ top:0, behavior:'smooth' });
+      } else if (view === 'points') {
+        renderPointsRanking();
+        window.scrollTo({ top:0, behavior:'smooth' });
+      } else if (view === 'students') {
+        setTimeout(() => document.getElementById('studentsPanel').scrollIntoView({ behavior:'smooth' }), 50);
+      } else {
+        window.scrollTo({ top:0, behavior:'smooth' });
+      }
+    }
+
+    async function loadAttendanceReports() {
+      const reportBody = document.getElementById('reportsBody');
+      reportBody.innerHTML = '<tr><td class="empty" colspan="10"><span class="loading-line"><span class="spinner"></span>جاري تحميل سجل الحضور والغياب…</span></td></tr>';
+      try {
+        if (!students.length) await loadStudents();
+        const response = await fetch(ATTENDANCE_CSV_URL + '&t=' + Date.now(), { cache:'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const rows = parseCSV((await response.text()).replace(/^\uFEFF/,'')).filter(row => row.some(cell => clean(cell)));
+        attendanceOperations = rows.slice(1).map(row => ({
+          code: clean(row[0]),
+          date: clean(row[1]),
+          dateValue: parseOperationDate(row[1]),
+          operation: clean(row[2]),
+          points: clean(row[3])
+        })).filter(item => item.code);
+        reportsLoaded = true;
+        rebuildAttendanceReports();
+      } catch (error) {
+        console.error(error);
+        reportBody.innerHTML = '<tr><td class="empty" colspan="10">تعذر تحميل سجل الحضور والغياب. تحقق من الإنترنت ومن نشر ورقة العمليات.</td></tr>';
+        showToast('تعذر تحميل تقرير الحضور والغياب','error');
+      }
+    }
+
+    function populateReportStudentFilter() {
+      const select = document.getElementById('reportStudentFilter');
+      const current = select.value;
+      const options = '<option value="">جميع الطلاب</option>' + [...students].sort((a,b)=>a.name.localeCompare(b.name,'ar')).map(student => '<option value="' + escapeHTML(student.code) + '">' + escapeHTML(student.name || student.code) + ' — ' + escapeHTML(student.code) + '</option>').join('');
+      select.innerHTML = options;
+      if (students.some(student => student.code === current)) select.value = current;
+      const operationsSelect = document.getElementById('operationsStudentFilter');
+      const operationsCurrent = operationsSelect.value;
+      operationsSelect.innerHTML = options;
+      if (students.some(student => student.code === operationsCurrent)) operationsSelect.value = operationsCurrent;
+    }
+
+    function handleReportPeriodChange() {
+      const period = document.getElementById('reportPeriodFilter').value;
+      document.getElementById('dateFilterField').classList.toggle('hidden', period !== 'date');
+      document.getElementById('monthFilterField').classList.toggle('hidden', period !== 'month');
+      if (period === 'date' && !document.getElementById('reportDateFilter').value) document.getElementById('reportDateFilter').value = formatInputDate(new Date());
+      if (period === 'month' && !document.getElementById('reportMonthFilter').value) document.getElementById('reportMonthFilter').value = formatInputDate(new Date()).slice(0,7);
+      rebuildAttendanceReports();
+    }
+
+    function rebuildAttendanceReports() {
+      const selectedCode = document.getElementById('reportStudentFilter').value;
+      const selectedStudents = selectedCode ? students.filter(student => student.code === selectedCode) : students;
+      const period = document.getElementById('reportPeriodFilter').value;
+      const filteredOps = attendanceOperations.filter(item => operationMatchesPeriod(item.dateValue, period));
+      attendanceReports = selectedStudents.map(student => {
+        const studentOps = filteredOps.filter(item => item.code === student.code);
+        const count = label => studentOps.filter(item => normalizeSearch(item.operation) === normalizeSearch(label)).length;
+        return {...student,attendance:count('حضور'),absence:count('غياب'),late:count('تأخر'),excused:count('غياب بعذر'),total:studentOps.length};
+      }).sort((a,b) => b.absence-a.absence || b.late-a.late || a.name.localeCompare(b.name,'ar'));
+      document.getElementById('activePeriodText').textContent = getPeriodLabel(period);
+      updateReportSummary();
+      renderAttendanceReports();
+    }
+
+    function operationMatchesPeriod(date, period) {
+      if (period === 'all') return true;
+      if (!date || Number.isNaN(date.getTime())) return false;
+      const today = startOfDay(new Date());
+      const value = startOfDay(date);
+      if (period === 'today') return value.getTime() === today.getTime();
+      if (period === 'yesterday') { const yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1); return value.getTime() === yesterday.getTime(); }
+      if (period === 'week') { const start=new Date(today);const day=start.getDay();start.setDate(start.getDate()-day);const end=new Date(start);end.setDate(end.getDate()+6);return value>=start&&value<=end; }
+      if (period === 'monthCurrent') return value.getFullYear()===today.getFullYear()&&value.getMonth()===today.getMonth();
+      if (period === 'year') return value.getFullYear()===today.getFullYear();
+      if (period === 'date') { const selected = parseISOInput(document.getElementById('reportDateFilter').value); return selected && value.getTime() === selected.getTime(); }
+      if (period === 'month') { const selected = document.getElementById('reportMonthFilter').value; return selected && formatInputDate(value).slice(0,7) === selected; }
+      if (period === 'threeMonths') { const start = new Date(today); start.setMonth(start.getMonth()-3); return value >= start && value <= new Date(); }
+      return true;
+    }
+
+    function getPeriodLabel(period) {
+      if (period === 'today') return 'اليوم';
+      if (period === 'yesterday') return 'أمس';
+      if (period === 'week') return 'هذا الأسبوع';
+      if (period === 'monthCurrent') return 'هذا الشهر';
+      if (period === 'year') return 'هذه السنة';
+      if (period === 'date') { const date=parseISOInput(document.getElementById('reportDateFilter').value); return date ? date.toLocaleDateString('ar-SA') : 'تاريخ محدد'; }
+      if (period === 'month') { const value=document.getElementById('reportMonthFilter').value; if(value){const parts=value.split('-');return new Date(+parts[0],+parts[1]-1,1).toLocaleDateString('ar-SA',{month:'long',year:'numeric'});} return 'شهر محدد'; }
+      if (period === 'threeMonths') return 'آخر 3 أشهر';
+      return 'كامل السجل';
+    }
+
+    function parseOperationDate(value) {
+      const normalized = clean(value).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+      if (!normalized) return null;
+      let match = normalized.match(/^(\d{4})[-\/]([01]?\d)[-\/]([0-3]?\d)/);
+      if (match) return validLocalDate(+match[1],+match[2]-1,+match[3]);
+      match = normalized.match(/^([0-3]?\d)[-\/]([01]?\d)[-\/](\d{4})/);
+      if (match) return validLocalDate(+match[3],+match[2]-1,+match[1]);
+      const parsed = new Date(normalized);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function validLocalDate(year,month,day){const date=new Date(year,month,day);return date.getFullYear()===year&&date.getMonth()===month&&date.getDate()===day?date:null;}
+    function startOfDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate());}
+    function parseISOInput(value){if(!value)return null;const p=value.split('-').map(Number);return validLocalDate(p[0],p[1]-1,p[2]);}
+    function formatInputDate(date){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');return y+'-'+m+'-'+d;}
+
+    function updateReportSummary() {
+      const totalAttendance = attendanceReports.reduce((sum,item) => sum + item.attendance,0);
+      const totalAbsence = attendanceReports.reduce((sum,item) => sum + item.absence,0);
+      const warnings = attendanceReports.filter(item => item.absence >= ABSENCE_WARNING_LIMIT);
+      document.getElementById('reportStudents').textContent = attendanceReports.length.toLocaleString('ar-SA');
+      document.getElementById('reportAttendance').textContent = totalAttendance.toLocaleString('ar-SA');
+      document.getElementById('reportAbsence').textContent = totalAbsence.toLocaleString('ar-SA');
+      document.getElementById('reportWarnings').textContent = warnings.length.toLocaleString('ar-SA');
+      const banner = document.getElementById('absenceWarning');
+      banner.classList.toggle('show', warnings.length > 0);
+      document.getElementById('warningTitle').textContent = warnings.length ? 'تنبيه: يوجد طلاب تجاوزوا حد الغياب' : 'لا توجد تحذيرات غياب';
+      document.getElementById('warningText').textContent = warnings.length ? warnings.length + ' طالب وصلوا إلى 5 غيابات أو أكثر: ' + warnings.map(item => item.name).join('، ') : '';
+    }
+
+    function renderAttendanceReports() {
+      const query = normalizeSearch(document.getElementById('reportSearch').value);
+      const list = !query ? attendanceReports : attendanceReports.filter(item => [item.name,item.code,item.group].some(value => normalizeSearch(value).includes(query)));
+      const reportBody = document.getElementById('reportsBody');
+      if (!list.length) {
+        reportBody.innerHTML = '<tr><td class="empty" colspan="10">لا توجد نتائج مطابقة.</td></tr>';
+        document.getElementById('reportRecordsText').textContent = 'لا توجد سجلات معروضة';
+        return;
+      }
+      reportBody.innerHTML = list.map((item,index) => `
+        <tr>
+          <td>${index+1}</td><td class="student-name">${escapeHTML(item.name||'—')}</td><td><span class="code">${escapeHTML(item.code)}</span></td><td><span class="group-pill">${escapeHTML(item.group||'—')}</span></td>
+          <td><span class="attendance-num good">${item.attendance}</span></td><td><span class="attendance-num ${item.absence>=ABSENCE_WARNING_LIMIT?'bad':''}">${item.absence}</span></td><td><span class="attendance-num late">${item.late}</span></td><td>${item.excused}</td><td>${item.total}</td>
+          <td><span class="warning-pill ${item.absence>=ABSENCE_WARNING_LIMIT?'danger':'safe'}">${item.absence>=ABSENCE_WARNING_LIMIT?'تحذير غياب':'منتظم'}</span></td>
+        </tr>`).join('');
+      document.getElementById('reportRecordsText').textContent = 'عرض ' + list.length + ' من أصل ' + attendanceReports.length + ' طالب';
+    }
+
+    async function loadStudents() {
+      body.innerHTML = '<tr><td class="empty" colspan="6"><span class="loading-line"><span class="spinner"></span>جاري جلب بيانات الطلاب…</span></td></tr>';
+      document.getElementById('sideStatus').textContent = 'جاري مزامنة البيانات';
+      try {
+        const response = await fetch(CSV_URL + '&t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const rows = parseCSV((await response.text()).replace(/^\uFEFF/, '')).filter(row => row.some(cell => clean(cell)));
+        students = rows.slice(1).map((row, index) => ({
+          rowNumber: index + 2,
+          code: clean(row[0]),
+          password: clean(row[1]),
+          name: clean(row[2]),
+          group: clean(row[3]),
+          points: parseNumber(row[4])
+        })).filter(student => student.code || student.name);
+        reportsLoaded = false;
+        populateReportStudentFilter();
+        document.getElementById('sideStatus').textContent = 'متصل ببيانات الطلاب';
+        document.getElementById('syncLabel').textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit',minute:'2-digit'});
+        updateStats();
+        applyFilter();
+      } catch (error) {
+        console.error(error);
+        document.getElementById('sideStatus').textContent = 'تعذر الاتصال بالجدول';
+        body.innerHTML = '<tr><td class="empty" colspan="6">تعذر جلب الطلاب. تحقق من الإنترنت ومن أن الجدول منشور للعامة، ثم اضغط تحديث البيانات.</td></tr>';
+        showToast('تعذر جلب بيانات الطلاب', 'error');
+      }
+    }
+
+    function applyFilter() {
+      const query = normalizeSearch(searchInput.value);
+      filteredStudents = !query ? [...students] : students.filter(student =>
+        [student.code, student.name, student.group].some(value => normalizeSearch(value).includes(query))
+      );
+      renderStudents();
+      document.getElementById('visibleStudents').textContent = filteredStudents.length.toLocaleString('ar-SA');
+    }
+
+    function renderStudents() {
+      if (!filteredStudents.length) {
+        body.innerHTML = '<tr><td class="empty" colspan="6">لا توجد نتائج مطابقة.</td></tr>';
+        document.getElementById('recordsText').textContent = 'لا توجد سجلات معروضة';
+        return;
+      }
+      body.innerHTML = filteredStudents.map((student, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td><span class="code">${escapeHTML(student.code)}</span></td>
+          <td class="student-name">${escapeHTML(student.name || '—')}</td>
+          <td><span class="group-pill">${escapeHTML(student.group || 'غير محددة')}</span></td>
+          <td>${maskPassword(student.password)}</td>
+          <td><div class="row-actions"><button class="icon-btn" type="button" onclick="openStudentCard(decodeURIComponent('${encodeURIComponent(student.code)}'))" title="عرض بطاقة الطالب" aria-label="بطاقة الطالب"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.5-1.5 1.3-2.3 2.5-2.3s2 .8 2.5 2.3M14 10h4M14 14h4"/></svg></button><button class="icon-btn" type="button" onclick="openEditModal(decodeURIComponent('${encodeURIComponent(student.code)}'))" title="تعديل بيانات الطالب" aria-label="تعديل"><svg viewBox="0 0 24 24"><path d="m4 16-.8 4.8L8 20l10.5-10.5a2.1 2.1 0 0 0-3-3zM14 8l3 3"/></svg></button><button class="icon-btn delete" type="button" onclick="openDeleteModal(decodeURIComponent('${encodeURIComponent(student.code)}'))" title="حذف الطالب" aria-label="حذف"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></button></div></td>
+        </tr>`).join('');
+      document.getElementById('recordsText').textContent = `عرض ${filteredStudents.length} من أصل ${students.length} طالب`;
+    }
+
+    function updateStats() {
+      document.getElementById('totalStudents').textContent = students.length.toLocaleString('ar-SA');
+      document.getElementById('totalGroups').textContent = new Set(students.map(s => s.group).filter(Boolean)).size.toLocaleString('ar-SA');
+    }
+
+    function openCreateModal() {
+      editingCode = null;
+      form.reset();
+      document.getElementById('code').readOnly = false;
+      document.getElementById('modalTitle').textContent = 'إضافة طالب جديد';
+      document.getElementById('modalSubtitle').textContent = 'أدخل بيانات الطالب ثم اضغط حفظ';
+      hideFormAlert();
+      modal.classList.add('open');
+      setTimeout(() => document.getElementById('code').focus(), 80);
+    }
+
+    function generateStudentCode(length) {
+      if (editingCode) return;
+      const min = length === 5 ? 10000 : 1000;
+      const max = length === 5 ? 99999 : 9999;
+      const used = new Set(students.map(student => clean(student.code)));
+      let generated = '';
+      for (let attempt = 0; attempt < 500; attempt++) {
+        generated = String(Math.floor(Math.random() * (max - min + 1)) + min);
+        if (!used.has(generated)) break;
+        generated = '';
+      }
+      if (!generated) { showFormAlert('تعذر إيجاد رقم متاح الآن، اكتب الكود يدويًا.', 'error'); return; }
+      document.getElementById('code').value = generated;
+      hideFormAlert();
+      showToast('تم اختيار كود غير مكرر من ' + length + ' أرقام');
+    }
+
+    function openEditModal(code) {
+      const student = students.find(item => item.code === code);
+      if (!student) return;
+      editingCode = student.code;
+      document.getElementById('code').value = student.code;
+      document.getElementById('password').value = student.password;
+      document.getElementById('name').value = student.name;
+      document.getElementById('group').value = student.group;
+      document.getElementById('code').readOnly = true;
+      document.getElementById('modalTitle').textContent = 'تعديل بيانات الطالب';
+      document.getElementById('modalSubtitle').textContent = 'سيتم تحديث السجل الحالي للكود ' + student.code;
+      hideFormAlert();
+      modal.classList.add('open');
+      setTimeout(() => document.getElementById('name').focus(), 80);
+    }
+
+    function closeModal() {
+      if (document.getElementById('saveBtn').disabled) return;
+      modal.classList.remove('open');
+      form.reset();
+      editingCode = null;
+      hideFormAlert();
+    }
+
+    function openStudentCard(code) {
+      const student = students.find(item => item.code === code);
+      if (!student) return;
+      document.getElementById('cardName').textContent = student.name || 'الطالب';
+      document.getElementById('cardCode').textContent = student.code || '—';
+      document.getElementById('cardPassword').textContent = student.password || '—';
+      document.getElementById('cardGroup').textContent = student.group || 'غير محددة';
+      document.getElementById('cardModal').classList.add('open');
+    }
+
+    function closeCardModal() {
+      document.getElementById('cardModal').classList.remove('open');
+    }
+
+    function openDeleteModal(code) {
+      const student = students.find(item => item.code === code);
+      if (!student) return;
+      deletingStudent = student;
+      document.getElementById('deleteStudentName').textContent = student.name || 'الطالب';
+      document.getElementById('deleteStudentCode').textContent = student.code;
+      const alert = document.getElementById('deleteAlert');
+      alert.textContent = ''; alert.className = 'form-alert';
+      document.getElementById('deleteModal').classList.add('open');
+    }
+
+    function closeDeleteModal() {
+      const button = document.getElementById('confirmDeleteBtn');
+      if (button.disabled) return;
+      document.getElementById('deleteModal').classList.remove('open');
+      deletingStudent = null;
+    }
+
+    async function confirmDeleteStudent() {
+      if (!ensureScriptUrl()) return;
+      if (!deletingStudent) return;
+      const button = document.getElementById('confirmDeleteBtn');
+      const alert = document.getElementById('deleteAlert');
+      button.disabled = true; button.textContent = 'جاري الحذف…';
+      alert.textContent = 'جاري حذف السجل من جدول البيانات…'; alert.className = 'form-alert show info';
+      try {
+        const data = new URLSearchParams();
+        data.append('action', 'delete');
+        data.append('code', deletingStudent.code);
+        const response = await fetch(SCRIPT_URL, { method:'POST', body:data });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const result = await response.json();
+        const markers = [result.action, result.result, result.status].map(value => clean(value).toLowerCase());
+        const deleted = markers.includes('deleted') || markers.includes('تم الحذف');
+        if (!deleted) throw new Error('DELETE_NOT_SUPPORTED');
+        const deletedName = deletingStudent.name;
+        document.getElementById('deleteModal').classList.remove('open');
+        deletingStudent = null;
+        showToast('تم حذف الطالب ' + deletedName, 'success');
+        await loadStudents();
+      } catch (error) {
+        console.error(error);
+        alert.textContent = 'تعذر حذف الطالب. تأكد من وضع رابط Apps Script الجديد ثم أعد نشره كـ Web App.';
+        alert.className = 'form-alert show error';
+      } finally {
+        button.disabled = false; button.textContent = 'نعم، حذف الطالب';
+      }
+    }
+
+    function printStudentCard() {
+      window.print();
+    }
+
+    async function shareStudentCard() {
+      const name = document.getElementById('cardName').textContent;
+      const text = [
+        'بطاقة الطالب | نادي نجباء',
+        'الاسم: ' + name,
+        'الكود: ' + document.getElementById('cardCode').textContent,
+        'كلمة السر: ' + document.getElementById('cardPassword').textContent,
+        'المجموعة: ' + document.getElementById('cardGroup').textContent
+      ].join('\n');
+      try {
+        const imageBlob = await buildCardImage();
+        const imageFile = new File([imageBlob], 'student-card-' + document.getElementById('cardCode').textContent + '.png', { type:'image/png' });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files:[imageFile] })) {
+          await navigator.share({ title: 'بطاقة الطالب - ' + name, text:'بطاقة بيانات الطالب من نادي نجباء', files:[imageFile] });
+          showToast('تم فتح مشاركة البطاقة كصورة', 'success');
+        } else if (navigator.share) {
+          await navigator.share({ title: 'بطاقة الطالب - ' + name, text });
+          showToast('تم فتح خيارات المشاركة', 'success');
+        } else if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          showToast('تم نسخ بيانات البطاقة للمشاركة', 'success');
+        } else {
+          const area = document.createElement('textarea');
+          area.value = text; area.style.position = 'fixed'; area.style.opacity = '0';
+          document.body.appendChild(area); area.select(); document.execCommand('copy'); area.remove();
+          showToast('تم نسخ بيانات البطاقة للمشاركة', 'success');
+        }
+      } catch (error) {
+        if (error && error.name !== 'AbortError') showToast('تعذرت المشاركة على هذا الجهاز', 'error');
+      }
+    }
+
+    async function buildCardImage() {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200; canvas.height = 720;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createLinearGradient(0,0,1200,720);
+      gradient.addColorStop(0,'#0c2f44'); gradient.addColorStop(.6,'#075f91'); gradient.addColorStop(1,'#0ea5e9');
+      ctx.fillStyle=gradient; roundRect(ctx,0,0,1200,720,42); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(70,150);ctx.lineTo(1130,150);ctx.stroke();
+      ctx.direction='rtl';ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='800 42px Tajawal';ctx.fillText('نادي نجباء',1120,85);
+      ctx.fillStyle='#ccecff';ctx.font='500 24px Tajawal';ctx.fillText('بطاقة الطالب الرسمية',1120,122);
+      ctx.fillStyle='#fff';ctx.font='800 50px Tajawal';ctx.fillText(document.getElementById('cardName').textContent,1120,235);
+      drawImageField(ctx,1120,300,500,'كود الطالب',document.getElementById('cardCode').textContent);
+      drawImageField(ctx,590,300,500,'كلمة السر',document.getElementById('cardPassword').textContent);
+      drawImageField(ctx,1120,455,1030,'المجموعة',document.getElementById('cardGroup').textContent);
+      ctx.fillStyle='#ccecff';ctx.font='500 19px Tajawal';ctx.fillText('احتفظ بهذه البطاقة في مكان آمن',1120,665);
+      return new Promise(resolve => canvas.toBlob(resolve,'image/png',.96));
+    }
+
+    function drawImageField(ctx,right,top,width,label,value) {
+      ctx.fillStyle='rgba(255,255,255,.11)';roundRect(ctx,right-width,top,width,120,20);ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.16)';ctx.stroke();
+      ctx.fillStyle='#bfe8fb';ctx.font='500 20px Tajawal';ctx.fillText(label,right-25,top+36);
+      ctx.fillStyle='#fff';ctx.font='700 31px Tajawal';ctx.fillText(value || '—',right-25,top+85);
+    }
+
+    function roundRect(ctx,x,y,width,height,radius) {
+      ctx.beginPath();ctx.moveTo(x+radius,y);ctx.lineTo(x+width-radius,y);ctx.quadraticCurveTo(x+width,y,x+width,y+radius);ctx.lineTo(x+width,y+height-radius);ctx.quadraticCurveTo(x+width,y+height,x+width-radius,y+height);ctx.lineTo(x+radius,y+height);ctx.quadraticCurveTo(x,y+height,x,y+height-radius);ctx.lineTo(x,y+radius);ctx.quadraticCurveTo(x,y,x+radius,y);ctx.closePath();
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!ensureScriptUrl()) return;
+      const payload = {
+        code: clean(document.getElementById('code').value),
+        password: clean(document.getElementById('password').value),
+        name: clean(document.getElementById('name').value),
+        group: clean(document.getElementById('group').value)
+      };
+      if (!payload.code || !payload.password || !payload.name || !payload.group) {
+        showFormAlert('أكمل جميع الحقول المطلوبة.', 'error'); return;
+      }
+      const duplicate = students.some(student => student.code === payload.code);
+      if (!editingCode && duplicate) {
+        showFormAlert('كود الطالب موجود مسبقًا. استخدم زر التعديل من الجدول.', 'error'); return;
+      }
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'جاري الحفظ…';
+      showFormAlert(editingCode ? 'جاري تحديث بيانات الطالب…' : 'جاري إضافة الطالب…', 'info');
+      try {
+        const data = new URLSearchParams();
+        Object.entries(payload).forEach(([key,value]) => data.append(key,value));
+        data.append('force', editingCode ? 'true' : 'false');
+        data.append('action', editingCode ? 'update' : 'add');
+        if (editingCode) data.append('originalCode', editingCode);
+        const response = await fetch(SCRIPT_URL, { method:'POST', body:data });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const result = await response.json();
+        if (result.result === 'exists' && !editingCode) {
+          showFormAlert('كود الطالب مسجل مسبقًا.', 'error'); return;
+        }
+        showFormAlert(editingCode ? 'تم تحديث بيانات الطالب بنجاح.' : 'تمت إضافة الطالب بنجاح.', 'success');
+        showToast(editingCode ? 'تم تحديث بيانات الطالب' : 'تمت إضافة الطالب', 'success');
+        setTimeout(async () => { modal.classList.remove('open'); form.reset(); editingCode = null; await loadStudents(); }, 700);
+      } catch (error) {
+        console.error(error);
+        showFormAlert('تعذر الحفظ أو التعديل. تأكد من رابط Apps Script ومن إعادة نشر آخر إصدار.', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'حفظ البيانات';
+      }
+    });
+
+    function renderOperations() {
+      const code = document.getElementById('operationsStudentFilter').value;
+      const from = parseISOInput(document.getElementById('operationsFrom').value);
+      const to = parseISOInput(document.getElementById('operationsTo').value);
+      visibleOperations = attendanceOperations.filter(item => {
+        if (code && item.code !== code) return false;
+        if (from && (!item.dateValue || startOfDay(item.dateValue) < from)) return false;
+        if (to && (!item.dateValue || startOfDay(item.dateValue) > to)) return false;
+        return true;
+      }).map(item => {
+        const student = students.find(s => s.code === item.code);
+        return {...item,name:student?student.name:'طالب غير موجود',group:student?student.group:'—'};
+      }).sort((a,b) => (b.dateValue?b.dateValue.getTime():0)-(a.dateValue?a.dateValue.getTime():0));
+      const tbody = document.getElementById('operationsBody');
+      if (!visibleOperations.length) tbody.innerHTML='<tr><td class="empty" colspan="7">لا توجد عمليات مطابقة للفلاتر المحددة.</td></tr>';
+      else tbody.innerHTML=visibleOperations.map((item,index)=>`<tr><td>${index+1}</td><td>${escapeHTML(item.date||'—')}</td><td class="student-name">${escapeHTML(item.name)}</td><td><span class="code">${escapeHTML(item.code)}</span></td><td>${escapeHTML(item.group)}</td><td><span class="group-pill">${escapeHTML(item.operation||'—')}</span></td><td><span class="${parseNumber(item.points)>=0?'operation-positive':'operation-negative'}">${escapeHTML(item.points||'0')}</span></td></tr>`).join('');
+      const attendance=visibleOperations.filter(i=>normalizeSearch(i.operation)===normalizeSearch('حضور')).length;
+      const absence=visibleOperations.filter(i=>normalizeSearch(i.operation)===normalizeSearch('غياب')).length;
+      const netPoints=visibleOperations.reduce((sum,i)=>sum+parseNumber(i.points),0);
+      document.getElementById('operationsCount').textContent=visibleOperations.length.toLocaleString('ar-SA');
+      document.getElementById('opsTotal').textContent=visibleOperations.length.toLocaleString('ar-SA');
+      document.getElementById('opsAttendance').textContent=attendance.toLocaleString('ar-SA');
+      document.getElementById('opsAbsence').textContent=absence.toLocaleString('ar-SA');
+      document.getElementById('opsPoints').textContent=netPoints.toLocaleString('ar-SA');
+      document.getElementById('operationsRecordsText').textContent='عرض '+visibleOperations.length+' عملية';
+    }
+
+    function clearOperationsFilters(){document.getElementById('operationsStudentFilter').value='';document.getElementById('operationsFrom').value='';document.getElementById('operationsTo').value='';renderOperations();}
+
+    function renderPointsRanking() {
+      const query=normalizeSearch(document.getElementById('pointsSearch').value);
+      const sorted=[...students].sort((a,b)=>b.points-a.points||a.name.localeCompare(b.name,'ar'));
+      let previous=null,rank=0;
+      pointsRanking=sorted.map((student,index)=>{if(previous===null||student.points!==previous)rank=index+1;previous=student.points;return {...student,rank};});
+      const list=!query?pointsRanking:pointsRanking.filter(item=>[item.name,item.code,item.group].some(value=>normalizeSearch(value).includes(query)));
+      const tbody=document.getElementById('pointsBody');
+      if(!list.length)tbody.innerHTML='<tr><td class="empty" colspan="5">لا توجد نتائج مطابقة.</td></tr>';
+      else tbody.innerHTML=list.map(item=>`<tr><td><span class="rank-badge ${item.rank===1?'first':item.rank===2?'second':item.rank===3?'third':''}">${item.rank}</span></td><td class="student-name">${escapeHTML(item.name||'—')}</td><td><span class="code">${escapeHTML(item.code)}</span></td><td><span class="group-pill">${escapeHTML(item.group||'—')}</span></td><td><span class="points-value">${item.points.toLocaleString('ar-SA')}</span></td></tr>`).join('');
+      const highest=sorted[0],lowest=sorted[sorted.length-1];
+      document.getElementById('highestStudent').textContent=highest?highest.name:'—';document.getElementById('highestPoints').textContent=highest?highest.points.toLocaleString('ar-SA'):'0';
+      document.getElementById('lowestStudent').textContent=lowest?lowest.name:'—';document.getElementById('lowestPoints').textContent=lowest?lowest.points.toLocaleString('ar-SA'):'0';
+      document.getElementById('pointsRecordsText').textContent='عرض '+list.length+' من أصل '+sorted.length+' طالب';
+    }
+
+    function printAttendanceReport() {
+      const student=document.getElementById('reportStudentFilter');const label=student.value?student.options[student.selectedIndex].text:'جميع الطلاب';
+      const totalAttendance=attendanceReports.reduce((s,i)=>s+i.attendance,0),totalAbsence=attendanceReports.reduce((s,i)=>s+i.absence,0),warnings=attendanceReports.filter(i=>i.absence>=ABSENCE_WARNING_LIMIT).length;
+      const rows=attendanceReports.map((i,index)=>[index+1,i.name,i.code,i.group,i.attendance,i.absence,i.late,i.excused,i.total,i.absence>=ABSENCE_WARNING_LIMIT?'تحذير':'منتظم']);
+      openPrintReport('تقرير الحضور والغياب',getPeriodLabel(document.getElementById('reportPeriodFilter').value)+' — '+label,['#','الطالب','الكود','المجموعة','حضور','غياب','تأخر','بعذر','الإجمالي','الحالة'],rows,[['الطلاب',attendanceReports.length],['الحضور',totalAttendance],['الغياب',totalAbsence],['التحذيرات',warnings]]);
+    }
+
+    function printOperationsReport() {
+      const student=document.getElementById('operationsStudentFilter');const label=student.value?student.options[student.selectedIndex].text:'جميع الطلاب';const from=document.getElementById('operationsFrom').value||'البداية';const to=document.getElementById('operationsTo').value||'اليوم';
+      const rows=visibleOperations.map((i,index)=>[index+1,i.date,i.name,i.code,i.group,i.operation,i.points]);
+      openPrintReport('تقرير عمليات الطلاب',label+' — من '+from+' إلى '+to,['#','التاريخ','الطالب','الكود','المجموعة','العملية','النقاط'],rows,[['العمليات',visibleOperations.length],['الحضور',visibleOperations.filter(i=>normalizeSearch(i.operation)===normalizeSearch('حضور')).length],['الغياب',visibleOperations.filter(i=>normalizeSearch(i.operation)===normalizeSearch('غياب')).length],['صافي النقاط',visibleOperations.reduce((s,i)=>s+parseNumber(i.points),0)]]);
+    }
+
+    function printPointsReport() {
+      const rows=pointsRanking.map(i=>[i.rank,i.name,i.code,i.group,i.points]);
+      openPrintReport('تقرير ترتيب نقاط الطلاب','ترتيب كامل من الأعلى إلى الأقل',['المركز','الطالب','الكود','المجموعة','النقاط'],rows,[['الطلاب',pointsRanking.length],['الأعلى',pointsRanking[0]?pointsRanking[0].points:0],['الأقل',pointsRanking.length?pointsRanking[pointsRanking.length-1].points:0],['تاريخ التقرير',new Date().toLocaleDateString('ar-SA')]]);
+    }
+
+    function openPrintReport(title,subtitle,headers,rows,summary) {
+      if(!rows.length){showToast('لا توجد بيانات لطباعة التقرير','error');return;}
+      const area=document.getElementById('reportPrintArea');
+      area.innerHTML=`<section class="a4-report"><header class="a4-report-header"><div><h1>${escapeHTML(title)}</h1><p>${escapeHTML(subtitle)}</p></div><div class="a4-report-meta">نادي نجباء<br>${new Date().toLocaleString('ar-SA')}</div></header><div class="a4-summary">${summary.map(i=>`<div><strong>${escapeHTML(i[1])}</strong><span>${escapeHTML(i[0])}</span></div>`).join('')}</div><table class="a4-table"><thead><tr>${headers.map(h=>'<th>'+escapeHTML(h)+'</th>').join('')}</tr></thead><tbody>${rows.map(row=>'<tr>'+row.map(value=>'<td>'+escapeHTML(value)+'</td>').join('')+'</tr>').join('')}</tbody></table><footer class="a4-report-footer">تقرير صادر من لوحة إدارة نادي نجباء</footer></section>`;
+      area.setAttribute('aria-hidden','false');document.body.classList.add('report-print');
+      const cleanup=()=>{document.body.classList.remove('report-print');area.setAttribute('aria-hidden','true');window.removeEventListener('afterprint',cleanup);};window.addEventListener('afterprint',cleanup);window.print();setTimeout(()=>{if(document.body.classList.contains('report-print'))cleanup();},2000);
+    }
+
+    function printAllStudentCards() {
+      if (!students.length) { showToast('لا توجد بيانات طلاب للطباعة', 'error'); return; }
+      const area = document.getElementById('cardsPrintArea');
+      const pages = [];
+      for (let start = 0; start < students.length; start += 9) {
+        const cards = students.slice(start, start + 9).map(student => `
+          <article class="print-card">
+            <div class="print-card-head"><strong>نادي نجباء</strong><span>بطاقة الطالب الرسمية</span></div>
+            <div class="print-card-name">${escapeHTML(student.name || 'الطالب')}</div>
+            <div class="print-card-grid">
+              <div class="print-card-item"><small>كود الطالب</small><strong>${escapeHTML(student.code || '—')}</strong></div>
+              <div class="print-card-item"><small>كلمة السر</small><strong>${escapeHTML(student.password || '—')}</strong></div>
+              <div class="print-card-item group"><small>المجموعة</small><strong>${escapeHTML(student.group || 'غير محددة')}</strong></div>
+            </div>
+          </article>`).join('');
+        pages.push('<section class="print-page">' + cards + '</section>');
+      }
+      area.innerHTML = pages.join('');
+      area.setAttribute('aria-hidden','false');
+      document.body.classList.add('batch-print');
+      const cleanup = () => {
+        document.body.classList.remove('batch-print');
+        area.setAttribute('aria-hidden','true');
+        window.removeEventListener('afterprint', cleanup);
+      };
+      window.addEventListener('afterprint', cleanup);
+      window.print();
+      setTimeout(() => { if (document.body.classList.contains('batch-print')) cleanup(); }, 2000);
+    }
+
+    function parseCSV(text) {
+      const rows=[]; let row=[]; let cell=''; let quoted=false;
+      for(let i=0;i<text.length;i++){
+        const ch=text[i];
+        if(ch==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}
+        else if(ch===','&&!quoted){row.push(cell);cell='';}
+        else if((ch==='\n'||ch==='\r')&&!quoted){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}
+        else cell+=ch;
+      }
+      if(cell.length||row.length){row.push(cell);rows.push(row);} return rows;
+    }
+    function clean(value){return String(value==null?'':value).trim();}
+    function parseNumber(value){const normalized=clean(value).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/,/g,'');const number=parseFloat(normalized);return Number.isFinite(number)?number:0;}
+    function normalizeSearch(value){return clean(value).toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');}
+    function escapeHTML(value){return clean(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));}
+    function maskPassword(value){const length=Math.max(4,Math.min(clean(value).length,8));return '<span aria-label="كلمة سر مخفية">'+ '•'.repeat(length) +'</span>';}
+    function showFormAlert(message,type){const box=document.getElementById('formAlert');box.textContent=message;box.className='form-alert show '+type;}
+    function hideFormAlert(){const box=document.getElementById('formAlert');box.textContent='';box.className='form-alert';}
+    function showToast(message,type=''){const toast=document.getElementById('toast');toast.textContent=message;toast.className='toast show '+type;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.className='toast',2600);}
+  </script>
+
+</body>
+</html>
