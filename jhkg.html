@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإعدادات المركزية | نادي نجباء</title>
+    <!-- خط Cairo الفاخر -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- مكتبة الأيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #17178f; /* سماوي رسمي عميق */
+            --primary-light: #f2f1ff; /* سماوي فاتح جداً */
+            --accent-glow: rgba(233, 25, 100, 0.12);
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* حاوية الصفحة العامة */
+        .page-wrapper {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* الهيدر الفخم */
+        .executive-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f2f1ff 70%, #fff7ed 100%);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .system-badge {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(233, 25, 100, 0.22);
+        }
+
+        /* تنسيق الأقسام */
+        .section-group {
+            margin-bottom: 30px;
+        }
+
+        .section-heading {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            padding-right: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* شبكة البطاقات */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* تصميم بطاقة الإعدادات الفاخرة */
+        .executive-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .executive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        .executive-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px var(--accent-glow), 0 8px 10px -6px var(--accent-glow);
+        }
+
+        .executive-card:hover::before {
+            background-color: var(--primary-color);
+        }
+
+        .card-content {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .executive-card:hover .card-icon {
+            transform: scale(1.05);
+        }
+
+        .card-text h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .card-text p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .card-action {
+            color: #cbd5e1;
+            font-size: 14px;
+            transition: color 0.3s, transform 0.3s;
+            align-self: center;
+        }
+
+        .executive-card:hover .card-action {
+            color: var(--primary-color);
+            transform: translateX(-4px);
+        }
+
+        /* ---------------------------------------------------- */
+        /* شريط التنقل السفلي: يظهر فقط على الجوال ويختفي في اللابتوب */
+        /* ---------------------------------------------------- */
+        .executive-nav {
+            display: none; /* مخفي افتراضياً للابتوب والشاشات الكبيرة */
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding-bottom: 90px; /* مساحة إضافية أسفل الجوال */
+            }
+
+            .executive-nav {
+                display: flex; /* يظهر فقط حصرياً على الجوال */
+                position: fixed;
+                bottom: 15px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 92%;
+                max-width: 500px;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(12px);
+                justify-content: space-around;
+                align-items: center;
+                padding: 12px 20px;
+                border-radius: 24px;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+                border: 1px solid var(--border-color);
+                z-index: 1000;
+            }
+
+            .nav-item {
+                text-decoration: none;
+                color: var(--text-muted);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 11px;
+                font-weight: 600;
+                gap: 5px;
+                transition: color 0.3s;
+            }
+
+            .nav-item i {
+                font-size: 18px;
+            }
+
+            .nav-item.active, .nav-item:hover {
+                color: var(--primary-color);
+            }
+        }
+    
+        .nujaba-brand {
+            display:flex;
+            align-items:center;
+            gap:16px;
+        }
+        .nujaba-logo {
+            width:68px;
+            height:68px;
+            object-fit:contain;
+            background:#fff;
+            border-radius:18px;
+            padding:6px;
+            border:2px solid #f5a000;
+            box-shadow:0 8px 20px rgba(23,23,143,.10);
+        }
+        .executive-card:hover::before { background: linear-gradient(#e91964,#f5a000); }
+
+    </style>
+</head>
+<body>
+
+    <!-- حاوية الصفحة -->
+    <div class="page-wrapper">
+        
+        <!-- الهيدر الرسمي -->
+        <header class="executive-header">
+            <div class="nujaba-brand">
+                <img src="logo-nujaba.png" class="nujaba-logo" alt="شعار نادي نجباء للفتيان">
+                <div class="header-title">
+                    <h1>إعدادات النظام | نادي نجباء</h1>
+                    <p>إدارة المنصات والتحكم بالبيانات التشغيلية داخل نظام نادي نجباء</p>
+                </div>
+            </div>
+            <div class="system-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>الاعدادات </span>
+            </div>
+        </header>
+
+        <!-- قسم المتاجر (روابط لصفحات داخلية ضمن ملفاتك) -->
+        <div class="section-group">
+            <div class="section-heading">إدارة منصة نادي نجباء </div>
+            <div class="cards-grid">
+                
+                <!-- زر صفحة إعدادات سلة المحلية (مثال: salla.html) -->
+                <a href="dashboar.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color: #ecfdf5; color: #059669;">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>الرئيسية  </h3>
+                            <p>التحكم بالمنتجات، الطلبات، وإعدادات الربط المحلية</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+                <!-- زر صفحة المنصة الأخرى المحلية (مثال: zid.html) -->
+                <a href="hxdj.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>  اضافة طالب </h3>
+                            <p>    يمكن اضافة طالب او تعديل بيانات طالب  في النظام</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- قسم النظام والتقارير (روابط لصفحات داخلية في نفس الملفات) -->
+        <div class="section-group">
+            <div class="section-heading">النظام والتقارير المحلية</div>
+            <div class="cards-grid">
+                
+                <!-- زر ينتقل لصفحة داخلية (مثال: jhd.html) -->
+                <a href="fnm.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color: #f0fdf4; color: #16a34a;">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>  ادارة جدول الدوري </h3>
+                            <p>عرض وتحديث السجلات،  في جدول الدوري يمكن التعديل والحذف والاضافة   </p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+                <!-- زر إنشاء بطاقات -->
+                <a href="dsgds.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color:#fff7ed; color:#ea580c;">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>إنشاء بطاقات</h3>
+                            <p>إنشاء وطباعة بطاقات الطلاب والباركود من خلال النظام</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+                <!-- زر التحضير -->
+                <a href="dksj.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color:#ecfdf5; color:#059669;">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>التحضير</h3>
+                            <p>فتح نظام تحضير الطلاب وتسجيل الحضور بسهولة</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+                <!-- زر إدارة المشرفين -->
+                <a href="ghfh.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color:#f5f3ff; color:#7c3aed;">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>إدارة المشرفين</h3>
+                            <p>إضافة المشرفين وإدارة بياناتهم وصلاحياتهم داخل النظام</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+
+                <!-- زر إدارة المقاطع -->
+                <a href="statngvadeos.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon" style="background-color:#eff6ff; color:#2563eb;">
+                            <i class="fa-solid fa-video"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>إدارة المقاطع</h3>
+                            <p>إضافة المقاطع وتعديلها وحذفها وإدارة الفيديوهات التي تظهر للطلاب</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+                <!-- زر ينتقل لصفحة إعدادات داخلية أخرى (مثال: profile.html) -->
+                <a href="hvgjh.html" class="executive-card">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <div class="card-text">
+                            <h3>خيارات التفضيلات</h3>
+                            <p>تخصيص الأذونات، ويمكن اضافة رسائل تنبيه للطلاب وإعدادات الحساب الشخصي</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left-long card-action"></i>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- شريط التنقل السفلي: يظهر حصرياً على الجوال -->
+    <nav class="executive-nav">
+        <a href="dashboar.html" class="nav-item">
+            <i class="fa-solid fa-house-chimney"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>الإحصائيات</span>
+        </a>
+        <a href="dsgds.html" class="nav-item">
+            <i class="fa-solid fa-barcode"></i>
+            <span>باركود</span>
+        </a>
+        <a href="jhkj.html" class="nav-item active">
+            <i class="fa-solid fa-gear"></i>
+            <span>الإعدادات</span>
+        </a>
+    </nav>
+
+</body>
+</html>

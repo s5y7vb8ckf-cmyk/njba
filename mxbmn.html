@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول الدوري الرسمي</title>
+    <!-- استدعاء خط IBM Plex Sans Arabic المعتمد في ثمانية -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #17178f;
+            --accent-color: #e91964; /* وردي شعار نجباء */
+            --bg-color: #f8f8ff;
+            --card-bg: #ffffff;
+            --text-main: #17174f;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px 15px 40px 15px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* الشريط العلوي المنفصل تماماً كشريحة مستقلة */
+        .top-banner {
+            background: linear-gradient(135deg, #17178f 0%, #2929a8 55%, #e91964 100%);
+            color: #ffffff;
+            padding: 30px 25px;
+            text-align: center;
+            border-radius: 16px;
+            border-bottom: 5px solid #f5a000;
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .top-banner h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .top-banner p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* تصميم الجدول لأجهزة اللابتوب والشاشات الكبيرة */
+        .desktop-view {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            padding: 16px 14px;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            color: #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .rank {
+            font-weight: 600;
+            width: 60px;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .points {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        /* تصميم الكروت للجوال */
+        .mobile-view {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .team-card-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-card-stats {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .stat-box {
+            background: #f8fafc;
+            padding: 8px 2px;
+            border-radius: 6px;
+        }
+
+        .stat-box span {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 50px;
+            font-size: 1rem;
+            color: #64748b;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .error { color: #dc2626; }
+
+        @media (min-width: 768px) {
+            .desktop-view { display: block; }
+            .mobile-view { display: none; }
+            body { padding: 30px 20px 50px 20px; }
+            .top-banner { padding: 35px 30px; margin-bottom: 30px; }
+            .top-banner h1 { font-size: 2.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- الشريط العلوي المنفصل والمستقل بحواف دائرية وظل فخم -->
+        <div class="top-banner">
+            <img src="logo-nujaba.png" alt="شعار نادي نجباء" style="width:82px;height:82px;object-fit:contain;background:#fff;border-radius:22px;padding:7px;margin-bottom:12px;box-shadow:0 8px 22px rgba(0,0,0,.14)">
+            <h1>جدول الدوري</h1>
+            <p>لنادي نجباء للفتيان</p>
+        </div>
+
+        <div id="content">
+            <div class="loading">جاري جلب وتحديث البيانات...</div>
+        </div>
+    </div>
+
+<script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2jK8uZPr3hC4Z4XSe3d3IB7XTegK0ZWGpanixDMCQQ2rf_21E_AQvpJeaVd5WGwh6E0iwx5zvgL4/pub?gid=303634874&single=true&output=csv';
+
+    async function loadStandings() {
+        try {
+            const response = await fetch(CSV_URL);
+            if (!response.ok) throw new Error('فشل الاتصال');
+            
+            const data = await response.text();
+            const rows = data.split('\n').map(row => row.split(','));
+
+            let tableRows = [];
+            // جلب الأسطر كما هي بدون أي ترتيب تلقائي
+            for (let i = 1; i < rows.length; i++) {
+                let cols = rows[i].map(c => c.trim());
+                if (cols.length >= 3 && cols[2] !== "") {
+                    tableRows.push(cols);
+                }
+            }
+
+            let desktopHtml = `
+                <div class="desktop-view">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الترتيب</th>
+                                    <th style="text-align: right; padding-right: 20px;">الفريق</th>
+                                    <th>لعب</th>
+                                    <th>فاز</th>
+                                    <th>تعادل</th>
+                                    <th>خسر</th>
+                                    <th>له</th>
+                                    <th>عليه</th>
+                                    <th>النقاط</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+            let mobileHtml = `<div class="mobile-view">`;
+
+            tableRows.forEach((row) => {
+                // العمود B (row[1]) هو معرف الفريق، لذلك لا يتم عرضه
+                let rank = row[0] || '';
+                let teamName = row[2] || 'غير معروف';
+                let played = row[3] || '0';
+                let won = row[4] || '0';
+                let drawn = row[5] || '0';
+                let lost = row[6] || '0';
+                let gf = row[7] || '0';
+                let ga = row[8] || '0';
+                let pts = row[9] || '0';
+
+                desktopHtml += `
+                    <tr>
+                        <td class="rank"><span class="rank-badge">${rank}</span></td>
+                        <td class="team-name">${teamName}</td>
+                        <td>${played}</td>
+                        <td>${won}</td>
+                        <td>${drawn}</td>
+                        <td>${lost}</td>
+                        <td>${gf}</td>
+                        <td>${ga}</td>
+                        <td class="points">${pts}</td>
+                    </tr>
+                `;
+
+                mobileHtml += `
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <div class="team-card-name">
+                                <span class="rank-badge">${rank}</span>
+                                ${teamName}
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b;">النقاط: <strong style="color: var(--accent-color); font-size: 1.1rem;">${pts}</strong></div>
+                        </div>
+                        <div class="team-card-stats">
+                            <div class="stat-box">لعب <span>${played}</span></div>
+                            <div class="stat-box">فاز <span>${won}</span></div>
+                            <div class="stat-box">تعادل <span>${drawn}</span></div>
+                            <div class="stat-box">خسر <span>${lost}</span></div>
+                            <div class="stat-box">له <span>${gf}</span></div>
+                            <div class="stat-box">عليه <span>${ga}</span></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            desktopHtml += `</tbody></table></div></div>`;
+            mobileHtml += `</div>`;
+
+            document.getElementById('content').innerHTML = desktopHtml + mobileHtml;
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById('content').innerHTML = `
+                <div class="error">تعذر جلب البيانات. تأكد من اتصال الإنترنت وصحة رابط الشيت.</div>
+            `;
+        }
+    }
+
+    loadStandings();
+</script>
+
+</body>
+</html>

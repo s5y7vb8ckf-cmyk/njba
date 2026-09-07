@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>إدارة الدوري المستقل</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --primary:#17178f;
+  --primary2:#2d2dab;
+  --pink:#e91964;
+  --orange:#f5a000;
+  --soft:#f4f3ff;
+  --bg:#f8f8ff;
+  --card:#fff;
+  --text:#20205f;
+  --muted:#70708c;
+  --line:#e6e3f4;
+  --danger:#c63c46;
+  --shadow:0 12px 34px rgba(23,23,143,.10);
+  --r:20px;
+}
+body{margin:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#fff,var(--bg));color:var(--text)}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--primary),var(--primary2) 55%,var(--pink));color:#fff;box-shadow:0 10px 26px rgba(23,23,143,.2)}
+.head{max-width:1200px;margin:auto;padding:18px 20px}
+.head h1{margin:0;font-size:27px}.head p{margin:5px 0 0;opacity:.82}
+nav{max-width:1200px;margin:auto;padding:0 20px 14px;display:flex;gap:8px;overflow:auto}
+nav button{white-space:nowrap;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:white;border-radius:999px;padding:10px 15px;font-weight:800;cursor:pointer}
+nav button.active{background:white;color:var(--primary)}
+main{max-width:1200px;margin:24px auto;padding:0 20px 80px}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.card h2{margin-top:0;color:var(--primary)}
+.stat strong{font-size:38px;color:var(--pink);display:block}.stat span{color:var(--muted);font-weight:700}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end}
+input,select{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;outline:none}
+input:focus,select:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(233,25,100,.09)}
+.btn{border:0;border-radius:13px;min-height:46px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--pink));color:#fff}
+.btn.secondary{background:var(--soft);color:var(--primary)}
+.btn.danger{background:#fff0f1;color:var(--danger)}
+.match-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.match{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+.score{font-size:27px;font-weight:900;color:var(--pink)}
+.badge{display:inline-block;background:var(--soft);color:var(--primary);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:12px;text-align:center;border-bottom:1px solid var(--line)}
+th{background:var(--soft);color:var(--primary)}
+.modal{display:none;position:fixed;inset:0;background:rgba(12,12,42,.58);z-index:100;padding:20px;overflow:auto}
+.modal.show{display:block}.modal-box{max-width:760px;margin:30px auto;background:#fff;border-radius:22px;padding:22px}
+.event{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:9px}
+.status{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--primary);color:#fff;padding:9px 15px;border-radius:999px;font-size:13px;z-index:150}
+.status.error{background:#9f2934}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.match-list{grid-template-columns:1fr}}
+@media(max-width:480px){main{padding:0 12px 70px}.grid{grid-template-columns:1fr 1fr}.head{padding:14px}.head h1{font-size:21px}nav{padding:0 12px 12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="head">
+    <h1>نظام إدارة الدوري المستقل</h1>
+    <p>الفرق • المباريات • الأهداف • البطاقات • جدول الدوري</p>
+  </div>
+  <nav>
+    <button class="active" data-page="home">الرئيسية</button>
+    <button data-page="teams">الفرق</button>
+    <button data-page="addmatch">إضافة مباراة</button>
+    <button data-page="matches">المباريات</button>
+    <button data-page="standings">جدول الدوري</button>
+    <button data-page="stats">الهدافون والكروت</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="page active">
+  <div class="grid">
+    <div class="card stat"><strong id="sTeams">0</strong><span>الفرق</span></div>
+    <div class="card stat"><strong id="sMatches">0</strong><span>المباريات</span></div>
+    <div class="card stat"><strong id="sGoals">0</strong><span>الأهداف</span></div>
+    <div class="card stat"><strong id="sCards">0</strong><span>البطاقات</span></div>
+  </div>
+  <div class="card" style="margin-top:15px"><h2>آخر المباريات</h2><div id="recentMatches" class="match-list"></div></div>
+</section>
+
+<section id="teams" class="page">
+  <div class="card">
+    <h2>إضافة فريق من جدول الطلاب</h2>
+    <div style="color:var(--muted);margin-bottom:12px">
+      يتم جلب أسماء الفرق تلقائياً من عمود المجموعة/الفريق في جدول الطلاب.
+    </div>
+    <div class="form-grid">
+      <select id="studentTeamSelect">
+        <option value="">جارٍ تحميل الفرق من جدول الطلاب...</option>
+      </select>
+      <button class="btn secondary" onclick="loadStudentTeams(true)">تحديث من جدول الطلاب</button>
+      <button class="btn primary" onclick="addSelectedStudentTeam()">إضافة الفريق المحدد</button>
+    </div>
+    <div id="studentTeamsStatus" style="margin-top:10px;color:var(--muted);font-size:13px"></div>
+
+    <div style="margin:18px 0;border-top:1px solid var(--line)"></div>
+
+    <h2 style="font-size:17px">إضافة فريق يدويًا</h2>
+    <div class="form-grid">
+      <input id="teamName" placeholder="اسم الفريق">
+      <button class="btn primary" onclick="addTeam()">إضافة الفريق</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:15px"><h2>الفرق</h2><div id="teamsList"></div></div>
+</section>
+
+<section id="addmatch" class="page">
+  <div class="card"><h2>إضافة مباراة</h2>
+    <div class="form-grid">
+      <input id="roundName" placeholder="مثال: الجولة 1">
+      <select id="homeTeam"></select>
+      <select id="awayTeam"></select>
+      <button class="btn primary" onclick="addMatch()">حفظ المباراة</button>
+    </div>
+  </div>
+</section>
+
+<section id="matches" class="page">
+  <div class="card"><h2>المباريات</h2><div id="matchesList" class="match-list"></div></div>
+</section>
+
+<section id="standings" class="page">
+  <div class="card"><h2>جدول الدوري</h2><div style="color:var(--muted);margin-bottom:10px">الفوز 3 • التعادل 1 • الخسارة 0</div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>له</th><th>عليه</th><th>الفارق</th><th>النقاط</th></tr></thead><tbody id="standingsBody"></tbody></table></div></div>
+</section>
+
+<section id="stats" class="page">
+  <div class="card"><h2>الهدافون</h2><div class="table-wrap"><table><thead><tr><th>#</th><th>الطالب</th><th>الفريق</th><th>الأهداف</th></tr></thead><tbody id="scorersBody"></tbody></table></div></div>
+  <div class="card" style="margin-top:15px"><h2>البطاقات</h2><div class="table-wrap"><table><thead><tr><th>الطالب</th><th>الفريق</th><th>صفراء</th><th>حمراء</th></tr></thead><tbody id="cardsBody"></tbody></table></div></div>
+</section>
+</main>
+
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+      <div><h2 id="modalTitle" style="margin:0 0 8px"></h2><div id="modalScore" class="score">0 - 0</div></div>
+      <button class="btn secondary" onclick="closeMatch()">إغلاق</button>
+    </div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <div class="form-grid">
+      <select id="eventTeam"></select>
+      <select id="studentName">
+        <option value="">اختر الفريق أولاً لعرض الطلاب</option>
+      </select>
+      <select id="eventType"><option value="goal">هدف</option><option value="yellow">كرت أصفر</option><option value="red">كرت أحمر</option></select>
+      <input id="eventMinute" type="number" min="0" placeholder="الدقيقة - اختياري">
+      <button class="btn primary" onclick="addEvent()">تسجيل الحدث</button>
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn secondary" id="finishBtn" onclick="toggleMatchStatus()"></button>
+      <button class="btn danger" onclick="deleteCurrentMatch()">حذف المباراة</button>
+    </div>
+    <h3>أحداث المباراة</h3><div id="eventsList"></div>
+  </div>
+</div>
+
+<div id="status" class="status">ضع رابط Apps Script</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmXbp9oZPuJq1bXlZHI8gFqnkf5hoTH43_O6hC6zRjHIwMtKDEQajKollCoPCgjMFk/exec';
+const STUDENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=0&single=true&output=csv';
+let studentTeams = [];
+let students = [];
+
+let db={teams:[],matches:[],standings:[]}, allEvents=[], currentMatchId=null;
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function setStatus(t,e=false){const x=document.getElementById('status');x.textContent=t;x.classList.toggle('error',e)}
+function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
+
+
+function parseCSV(text){
+  const rows=[];
+  let row=[],cell='',quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i], next=text[i+1];
+    if(ch === '"'){
+      if(quoted && next === '"'){cell+='"';i++;}
+      else quoted=!quoted;
+    }else if(ch===',' && !quoted){
+      row.push(cell);cell='';
+    }else if((ch==='\n'||ch==='\r') && !quoted){
+      if(ch==='\r' && next==='\n') i++;
+      row.push(cell);cell='';
+      if(row.some(v=>String(v).trim()!=='')) rows.push(row);
+      row=[];
+    }else{
+      cell+=ch;
+    }
+  }
+  row.push(cell);
+  if(row.some(v=>String(v).trim()!=='')) rows.push(row);
+  return rows;
+}
+
+function normalizeArabic(v){
+  return String(v||'').trim().toLowerCase()
+    .replace(/[أإآ]/g,'ا')
+    .replace(/ة/g,'ه')
+    .replace(/ى/g,'ي')
+    .replace(/[\u064B-\u065F\u0670]/g,'')
+    .replace(/\s+/g,' ');
+}
+
+function detectTeamColumn(headers){
+  const normalized = headers.map(h=>normalizeArabic(h));
+  let idx = normalized.findIndex(h =>
+    h.includes('فريق') || h.includes('مجموع') || h.includes('فرقه')
+  );
+  // في جدول الطلاب المستخدم حاليًا العمود D هو المجموعة/الفريق
+  return idx >= 0 ? idx : 3;
+}
+
+async function loadStudentTeams(showMessage=false){
+  const select=document.getElementById('studentTeamSelect');
+  const status=document.getElementById('studentTeamsStatus');
+  try{
+    if(select) select.innerHTML='<option value="">جارٍ تحميل الفرق...</option>';
+    const res=await fetch(STUDENTS_CSV_URL + '&t=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('تعذر تحميل جدول الطلاب');
+
+    const csv=await res.text();
+    const rows=parseCSV(csv);
+    if(!rows.length) throw new Error('جدول الطلاب فارغ');
+
+    const headers=rows.shift().map(x=>String(x||'').trim());
+    const teamIndex=detectTeamColumn(headers);
+
+    // جدول الطلاب الحالي:
+    // A الكود - B كلمة السر/معرف - C الاسم - D المجموعة/الفريق
+    students = rows.map(r=>({
+      code:String(r[0]||'').trim(),
+      name:String(r[2]||'').trim(),
+      team:String(r[teamIndex]||'').trim()
+    })).filter(s=>s.name);
+
+    const map=new Map();
+    students.forEach(s=>{
+      const raw=String(s.team||'').trim();
+      if(!raw) return;
+      const key=normalizeArabic(raw);
+      if(!map.has(key)) map.set(key, raw);
+    });
+
+    studentTeams=[...map.values()].sort((a,b)=>a.localeCompare(b,'ar'));
+
+    if(select){
+      select.innerHTML='<option value="">اختر الفريق من جدول الطلاب...</option>' +
+        studentTeams.map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
+    }
+
+    if(status){
+      status.textContent = studentTeams.length
+        ? `تم العثور على ${studentTeams.length} فريق/مجموعة في جدول الطلاب.`
+        : 'لم يتم العثور على فرق أو مجموعات في جدول الطلاب.';
+    }
+
+    if(showMessage) setStatus('تم تحديث الفرق من جدول الطلاب');
+  }catch(e){
+    if(select) select.innerHTML='<option value="">تعذر تحميل الفرق من جدول الطلاب</option>';
+    if(status) status.textContent=e.message;
+    if(showMessage) setStatus(e.message,true);
+  }
+}
+
+async function addSelectedStudentTeam(){
+  const select=document.getElementById('studentTeamSelect');
+  const name=String(select?.value||'').trim();
+  if(!name) return alert('اختر فريقاً من جدول الطلاب أولاً');
+
+  const exists=db.teams.some(t=>normalizeArabic(t.name)===normalizeArabic(name));
+  if(exists) return alert('هذا الفريق مضاف مسبقاً');
+
+  await api('addTeam',{data:{id:uid(),name}});
+}
+
+
+
+function loadPlayersForSelectedTeam(){
+  const teamSelect = document.getElementById('eventTeam');
+  const studentSelect = document.getElementById('studentName');
+  if(!teamSelect || !studentSelect) return;
+
+  const selectedTeamName = teamName(teamSelect.value);
+  const key = normalizeArabic(selectedTeamName);
+
+  const filtered = students
+    .filter(s => normalizeArabic(s.team) === key)
+    .sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+
+  studentSelect.innerHTML = filtered.length
+    ? '<option value="">اختر الطالب...</option>' +
+      filtered.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}${s.code ? ' — ' + esc(s.code) : ''}</option>`).join('')
+    : '<option value="">لا يوجد طلاب مسجلون في هذا الفريق</option>';
+}
+
+async function loadData(){
+  if(SCRIPT_URL.includes('YOUR_')){setStatus('ضع رابط Apps Script داخل الملف',true);return}
+  try{
+    setStatus('جاري الاتصال...');
+    const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'فشل الاتصال');
+    applyData(j.data);setStatus('متصل');
+  }catch(e){setStatus(e.message,true)}
+}
+
+async function api(action,payload={}){
+  try{
+    setStatus('جاري الحفظ...');
+    const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...payload})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'فشل الحفظ');
+    applyData(j.data);setStatus('تم الحفظ');
+    return j;
+  }catch(e){setStatus(e.message,true);throw e}
+}
+
+function applyData(d){db.teams=d?.teams||[];db.matches=d?.matches||[];db.standings=d?.standings||[];allEvents=d?.events||[];renderAll();if(currentMatchId)renderModal()}
+function teamName(id){return db.teams.find(t=>String(t.id)===String(id))?.name||'فريق'}
+function matchEvents(id){return allEvents.filter(e=>String(e.matchId)===String(id))}
+function score(m){const ev=matchEvents(m.id);return [ev.filter(e=>e.type==='goal'&&String(e.teamId)===String(m.homeId)).length,ev.filter(e=>e.type==='goal'&&String(e.teamId)===String(m.awayId)).length]}
+
+function renderAll(){renderHome();renderTeams();renderSelects();renderMatches();renderStandings();renderStats()}
+function renderHome(){
+ document.getElementById('sTeams').textContent=db.teams.length;
+ document.getElementById('sMatches').textContent=db.matches.length;
+ document.getElementById('sGoals').textContent=allEvents.filter(e=>e.type==='goal').length;
+ document.getElementById('sCards').textContent=allEvents.filter(e=>e.type==='yellow'||e.type==='red').length;
+ document.getElementById('recentMatches').innerHTML=[...db.matches].sort((a,b)=>b.createdAt-a.createdAt).slice(0,5).map(matchCard).join('')||'<div>لا توجد مباريات</div>';
+}
+function renderTeams(){document.getElementById('teamsList').innerHTML=db.teams.map(t=>`<div class="event"><strong>${esc(t.name)}</strong><button class="btn danger" onclick="deleteTeam('${t.id}')">حذف</button></div>`).join('')||'لا توجد فرق'}
+function renderSelects(){const o='<option value="">اختر الفريق</option>'+db.teams.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');homeTeam.innerHTML=o;awayTeam.innerHTML=o}
+function matchCard(m){const [h,a]=score(m);return `<div class="match"><div style="display:flex;justify-content:space-between;gap:10px"><div><span class="badge">${esc(m.round)}</span><div style="margin-top:8px;font-weight:800">${esc(teamName(m.homeId))} × ${esc(teamName(m.awayId))}</div></div><div class="score">${h} - ${a}</div></div><div style="margin-top:10px"><span class="badge">${m.status==='finished'?'منتهية':'مفتوحة'}</span> <button class="btn secondary" onclick="openMatch('${m.id}')">إدارة المباراة</button></div></div>`}
+function renderMatches(){document.getElementById('matchesList').innerHTML=[...db.matches].sort((a,b)=>b.createdAt-a.createdAt).map(matchCard).join('')||'لا توجد مباريات'}
+function renderStandings(){standingsBody.innerHTML=db.standings.map(r=>`<tr><td>${r.rank}</td><td><strong>${esc(r.teamName)}</strong></td><td>${r.played}</td><td>${r.won}</td><td>${r.drawn}</td><td>${r.lost}</td><td>${r.goalsFor}</td><td>${r.goalsAgainst}</td><td>${r.goalDifference}</td><td><strong>${r.points}</strong></td></tr>`).join('')||'<tr><td colspan="10">لا توجد بيانات</td></tr>'}
+function renderStats(){
+ const m={};allEvents.forEach(e=>{const k=e.teamId+'__'+e.studentName.trim().toLowerCase();m[k]??={name:e.studentName,teamId:e.teamId,goals:0,yellow:0,red:0};if(e.type==='goal')m[k].goals++;if(e.type==='yellow')m[k].yellow++;if(e.type==='red')m[k].red++});
+ const rows=Object.values(m);
+ const sc=rows.filter(x=>x.goals).sort((a,b)=>b.goals-a.goals);
+ scorersBody.innerHTML=sc.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.name)}</td><td>${esc(teamName(x.teamId))}</td><td><strong>${x.goals}</strong></td></tr>`).join('')||'<tr><td colspan="4">لا يوجد أهداف</td></tr>';
+ const ca=rows.filter(x=>x.yellow||x.red);cardsBody.innerHTML=ca.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(teamName(x.teamId))}</td><td>${x.yellow}</td><td>${x.red}</td></tr>`).join('')||'<tr><td colspan="4">لا توجد بطاقات</td></tr>';
+}
+
+async function addTeam(){const name=teamNameInput();if(!name)return alert('اكتب اسم الفريق');await api('addTeam',{data:{id:uid(),name}});teamName.value=''}
+function teamNameInput(){return document.getElementById('teamName').value.trim()}
+async function deleteTeam(id){if(confirm('حذف الفريق؟'))await api('deleteTeam',{id})}
+async function addMatch(){const round=roundName.value.trim(),homeId=homeTeam.value,awayId=awayTeam.value;if(!round||!homeId||!awayId)return alert('أكمل بيانات المباراة');if(homeId===awayId)return alert('اختر فريقين مختلفين');await api('addMatch',{data:{id:uid(),round,homeId,awayId,status:'open',createdAt:Date.now()}});roundName.value='';showPage('matches')}
+
+function openMatch(id){currentMatchId=id;modal.classList.add('show');renderModal()}
+function closeMatch(){currentMatchId=null;modal.classList.remove('show')}
+function cur(){return db.matches.find(m=>String(m.id)===String(currentMatchId))}
+function renderModal(){const m=cur();if(!m)return closeMatch();const [h,a]=score(m);modalTitle.textContent=`${teamName(m.homeId)} × ${teamName(m.awayId)} — ${m.round}`;modalScore.textContent=`${h} - ${a}`;eventTeam.innerHTML=`<option value="${m.homeId}">${esc(teamName(m.homeId))}</option><option value="${m.awayId}">${esc(teamName(m.awayId))}</option>`;
+eventTeam.onchange=loadPlayersForSelectedTeam;
+loadPlayersForSelectedTeam();
+finishBtn.textContent=m.status==='finished'?'إعادة فتح المباراة':'إنهاء المباراة';eventsList.innerHTML=matchEvents(m.id).sort((a,b)=>b.createdAt-a.createdAt).map(e=>`<div class="event"><div><strong>${esc(e.studentName)}</strong><div style="color:var(--muted)">${esc(teamName(e.teamId))} • ${e.type==='goal'?'هدف':e.type==='yellow'?'كرت أصفر':'كرت أحمر'}${e.minute?' • الدقيقة '+esc(e.minute):''}</div></div><button class="btn danger" onclick="deleteEvent('${e.id}')">حذف</button></div>`).join('')||'لا توجد أحداث'}
+async function addEvent(){const m=cur();if(!m)return;if(m.status==='finished')return alert('المباراة منتهية');const studentName=document.getElementById('studentName').value.trim();if(!studentName)return alert('اكتب اسم الطالب');await api('addEvent',{data:{id:uid(),matchId:m.id,teamId:eventTeam.value,studentName,type:eventType.value,minute:eventMinute.value.trim(),createdAt:Date.now()}});document.getElementById('studentName').selectedIndex=0;eventMinute.value=''}
+async function deleteEvent(id){if(confirm('حذف الحدث؟'))await api('deleteEvent',{id})}
+async function toggleMatchStatus(){const m=cur();await api('setMatchStatus',{id:m.id,status:m.status==='finished'?'open':'finished'})}
+async function deleteCurrentMatch(){const m=cur();if(confirm('حذف المباراة وجميع أحداثها؟')){await api('deleteMatch',{id:m.id});closeMatch()}}
+
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelector(`nav button[data-page="${id}"]`)?.classList.add('active')}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+loadData();
+loadStudentTeams(false);
+</script>
+</body>
+</html>
