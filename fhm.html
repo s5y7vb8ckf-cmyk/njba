@@ -74,6 +74,49 @@
     .a4-report-footer{margin-top:4mm;font-size:7pt;color:#666;text-align:center}
   }
 </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    /* ===== استيراد الطلاب من Excel - إضافة مستقلة بدون تغيير بقية النظام ===== */
+    .excel-import-modal{width:min(960px,100%)}
+    .excel-import-actions{display:flex;gap:9px;flex-wrap:wrap}
+    .excel-import-btn{color:#087a55;background:#edf9f4;border:1px solid #c3eadb}
+    .excel-import-btn:hover{background:#e3f6ed;border-color:#99d9c2}
+    .excel-upload-box{margin:0 22px 18px;border:2px dashed #b9ddd0;border-radius:15px;background:#f7fcfa;padding:24px;text-align:center;cursor:pointer;transition:.18s}
+    .excel-upload-box:hover{border-color:#087a55;background:#f0faf6}
+    .excel-upload-icon{width:52px;height:52px;margin:0 auto 10px;border-radius:15px;background:#e7f7ef;color:#087a55;display:grid;place-items:center}
+    .excel-upload-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .excel-upload-box strong{display:block;font-size:14px}
+    .excel-upload-box span{display:block;margin-top:5px;font-size:11px;color:var(--muted)}
+    .excel-import-status{margin:0 22px 15px;padding:11px 13px;border-radius:11px;font-size:11px;display:none}
+    .excel-import-status.show{display:block}
+    .excel-import-status.info{color:#08668f;background:#eff9fe;border:1px solid #c6eaf9}
+    .excel-import-status.success{color:#08714f;background:#edfcf6;border:1px solid #b8ead8}
+    .excel-import-status.error{color:#a82424;background:#fff1f0;border:1px solid #ffd0cd}
+    .excel-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 22px 15px}
+    .excel-summary-card{border:1px solid var(--line);border-radius:12px;background:#fbfdfe;padding:12px 14px}
+    .excel-summary-card strong{display:block;font-size:20px;font-weight:800}
+    .excel-summary-card span{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+    .excel-preview-wrap{margin:0 22px 18px;border:1px solid var(--line);border-radius:13px;overflow:auto;max-height:390px}
+    .excel-preview-table{min-width:760px}
+    .excel-preview-table th,.excel-preview-table td{padding:10px 12px;font-size:11px}
+    .excel-preview-table input{width:100%;min-width:105px;height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:0 9px;outline:0}
+    .excel-preview-table input:focus{border-color:#58b5de;box-shadow:0 0 0 3px rgba(14,165,233,.08)}
+    .excel-row-remove{width:31px;height:31px;border:1px solid #ffd0cc;background:#fff2f1;color:#b42318;border-radius:8px;cursor:pointer}
+    .excel-progress{display:none;margin:0 22px 15px}
+    .excel-progress.show{display:block}
+    .excel-progress-bar{height:9px;background:#e7eef2;border-radius:99px;overflow:hidden}
+    .excel-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#17178f,#e91964);transition:.2s}
+    .excel-progress-text{font-size:10px;color:var(--muted);margin-top:6px}
+    @media(max-width:760px){
+      .excel-summary{grid-template-columns:1fr;margin-inline:14px}
+      .excel-upload-box,.excel-import-status,.excel-preview-wrap,.excel-progress{margin-inline:14px}
+      .excel-import-actions{width:100%}
+      .excel-import-actions .btn{flex:1}
+    }
+  </style>
+
 </head>
 <body>
   <div class="app">
@@ -206,11 +249,89 @@
         </div>
         <div class="modal-foot">
           <button class="btn btn-primary" id="saveBtn" type="submit">حفظ البيانات</button>
+          <button class="btn excel-import-btn" id="excelImportOpenBtn" type="button" onclick="openExcelImportModal()">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16h16V8zM14 2v6h6M8 13l5 5M13 13l-5 5"/></svg>
+            إضافة ملف Excel
+          </button>
           <button class="btn btn-light" type="button" onclick="closeModal()">إلغاء</button>
         </div>
       </form>
     </div>
   </div>
+
+  <!-- نافذة استيراد الطلاب من Excel -->
+  <div class="backdrop" id="excelImportModal" role="dialog" aria-modal="true" aria-labelledby="excelImportTitle">
+    <div class="modal excel-import-modal">
+      <div class="modal-head">
+        <div>
+          <h3 id="excelImportTitle">إضافة الطلاب من ملف Excel</h3>
+          <p>ارفع الملف، راجع البيانات، ثم أضف جميع الطلاب باستخدام نفس نظام الحفظ الحالي</p>
+        </div>
+        <button class="close" type="button" onclick="closeExcelImportModal()" aria-label="إغلاق">×</button>
+      </div>
+
+      <input id="excelStudentsFile" type="file" accept=".xlsx,.xls,.csv" hidden onchange="readExcelStudents(this)">
+
+      <div class="excel-upload-box" onclick="document.getElementById('excelStudentsFile').click()">
+        <div class="excel-upload-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16h16V8zM14 2v6h6M12 18v-6M9 15l3-3 3 3"/></svg>
+        </div>
+        <strong>اختر ملف Excel أو CSV</strong>
+        <span>يقرأ فقط: A الكود — B كلمة السر — C الاسم — D المجموعة. الأعمدة E وما بعدها يتم تجاهلها تمامًا</span>
+      </div>
+
+
+      <div style="margin:0 22px 15px;padding:12px 14px;border:1px solid #d8e9f3;background:#f7fbfe;border-radius:12px;font-size:11px;line-height:1.9;color:#526977">
+        <strong style="color:#17178f">ترتيب الأعمدة المعتمد:</strong>
+        A = الكود &nbsp; | &nbsp;
+        B = كلمة السر &nbsp; | &nbsp;
+        C = اسم الطالب &nbsp; | &nbsp;
+        D = المجموعة
+        <br>
+        <span style="color:#087a55;font-weight:700">لن يتم قراءة أو إرسال أو تعديل أي عمود من E وما بعده.</span>
+      </div>
+
+      <div id="excelImportStatus" class="excel-import-status"></div>
+
+      <div id="excelImportResults" style="display:none">
+        <div class="excel-summary">
+          <div class="excel-summary-card"><strong id="excelTotalCount">0</strong><span>إجمالي الطلاب</span></div>
+          <div class="excel-summary-card"><strong id="excelReadyCount">0</strong><span>جاهز للإضافة</span></div>
+          <div class="excel-summary-card"><strong id="excelGroupCount">0</strong><span>عدد المجموعات</span></div>
+        </div>
+
+        <div class="excel-preview-wrap">
+          <table class="excel-preview-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الكود</th>
+                <th>كلمة السر</th>
+                <th>اسم الطالب</th>
+                <th>المجموعة</th>
+                <th>حذف</th>
+              </tr>
+            </thead>
+            <tbody id="excelPreviewBody"></tbody>
+          </table>
+        </div>
+
+        <div id="excelProgress" class="excel-progress">
+          <div class="excel-progress-bar"><div id="excelProgressFill" class="excel-progress-fill"></div></div>
+          <div id="excelProgressText" class="excel-progress-text">0%</div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <div class="excel-import-actions">
+          <button class="btn btn-primary" id="excelAddAllBtn" type="button" onclick="addAllExcelStudents()">إضافة جميع الطلاب</button>
+          <button class="btn btn-light" type="button" onclick="generateMissingExcelCredentials()">إنشاء البيانات الناقصة</button>
+          <button class="btn btn-light" type="button" onclick="closeExcelImportModal()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="backdrop" id="cardModal" role="dialog" aria-modal="true" aria-labelledby="cardModalTitle">
     <div class="modal card-modal">
       <div class="modal-head"><div><h3 id="cardModalTitle">بطاقة بيانات الطالب</h3><p>جاهزة للطباعة أو المشاركة</p></div><button class="close" type="button" onclick="closeCardModal()" aria-label="إغلاق">×</button></div>
@@ -254,7 +375,7 @@
   <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=0&single=true&output=csv';
     const ATTENDANCE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2m4aOM7rioGtAMfwZQbiAp5hdGJno_DQSVn5z54J853YAcE3dm6e53Drbmue9LpfzI8E7syNJDenb/pub?gid=271887992&single=true&output=csv';
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_csdLB8pr14uWIOCwudpIe-zQK2wRhHJoC4LHNOEIEMPEo_IazVvDrlVVcyct7HVu/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws52flVOkMiC9i1zbdEYDxRvAK8IdmsEadCZhqolXb4hlijXojz7zGCsezmDNqwBDI/exec';
     const ABSENCE_WARNING_LIMIT = 5;
     let students = [];
     let filteredStudents = [];
@@ -265,6 +386,8 @@
     let visibleOperations = [];
     let pointsRanking = [];
     let reportsLoaded = false;
+    let excelImportStudents = [];
+    let excelImportBusy = false;
     const body = document.getElementById('studentsBody');
     const modal = document.getElementById('studentModal');
     const form = document.getElementById('studentForm');
@@ -284,7 +407,8 @@
     modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
     document.getElementById('cardModal').addEventListener('click', event => { if (event.target.id === 'cardModal') closeCardModal(); });
     document.getElementById('deleteModal').addEventListener('click', event => { if (event.target.id === 'deleteModal') closeDeleteModal(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeCardModal(); closeDeleteModal(); } });
+    document.getElementById('excelImportModal').addEventListener('click', event => { if (event.target.id === 'excelImportModal') closeExcelImportModal(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeCardModal(); closeDeleteModal(); closeExcelImportModal(); } });
 
 
     function ensureScriptUrl() {
@@ -521,6 +645,8 @@
       document.getElementById('code').readOnly = false;
       document.getElementById('modalTitle').textContent = 'إضافة طالب جديد';
       document.getElementById('modalSubtitle').textContent = 'أدخل بيانات الطالب ثم اضغط حفظ';
+      const excelButton = document.getElementById('excelImportOpenBtn');
+      if (excelButton) excelButton.style.display = '';
       hideFormAlert();
       modal.classList.add('open');
       setTimeout(() => document.getElementById('code').focus(), 80);
@@ -554,6 +680,8 @@
       document.getElementById('code').readOnly = true;
       document.getElementById('modalTitle').textContent = 'تعديل بيانات الطالب';
       document.getElementById('modalSubtitle').textContent = 'سيتم تحديث السجل الحالي للكود ' + student.code;
+      const excelButton = document.getElementById('excelImportOpenBtn');
+      if (excelButton) excelButton.style.display = 'none';
       hideFormAlert();
       modal.classList.add('open');
       setTimeout(() => document.getElementById('name').focus(), 80);
@@ -839,6 +967,453 @@
       window.print();
       setTimeout(() => { if (document.body.classList.contains('batch-print')) cleanup(); }, 2000);
     }
+
+
+    /* =========================================================
+       استيراد الطلاب من Excel
+       يستخدم نفس SCRIPT_URL ونفس action=add الموجود أصلًا
+       ========================================================= */
+
+    function openExcelImportModal() {
+      if (excelImportBusy) return;
+      hideFormAlert();
+      modal.classList.remove('open');
+      const excelModal = document.getElementById('excelImportModal');
+      excelModal.classList.add('open');
+      clearExcelImportStatus();
+    }
+
+    function closeExcelImportModal() {
+      if (excelImportBusy) return;
+      document.getElementById('excelImportModal').classList.remove('open');
+    }
+
+    function showExcelImportStatus(message, type='info') {
+      const box = document.getElementById('excelImportStatus');
+      box.textContent = message;
+      box.className = 'excel-import-status show ' + type;
+    }
+
+    function clearExcelImportStatus() {
+      const box = document.getElementById('excelImportStatus');
+      box.textContent = '';
+      box.className = 'excel-import-status';
+    }
+
+    function randomImportCode(length=5) {
+      const used = new Set([
+        ...students.map(student => clean(student.code)),
+        ...excelImportStudents.map(student => clean(student.code))
+      ]);
+      const min = length === 4 ? 1000 : 10000;
+      const max = length === 4 ? 9999 : 99999;
+      for (let attempt = 0; attempt < 2000; attempt++) {
+        const value = String(Math.floor(Math.random() * (max-min+1)) + min);
+        if (!used.has(value)) return value;
+      }
+      return '';
+    }
+
+    function randomImportPassword() {
+      return String(Math.floor(Math.random() * 9000) + 1000);
+    }
+
+    function normalizeExcelHeader(value) {
+      return clean(value)
+        .toLowerCase()
+        .replace(/[أإآ]/g,'ا')
+        .replace(/ة/g,'ه')
+        .replace(/ى/g,'ي')
+        .replace(/\s+/g,'');
+    }
+
+    function detectExcelColumns(rows) {
+      const first = (rows[0] || []).map(normalizeExcelHeader);
+      const aliases = {
+        code:['الكود','كود','كودالطالب','رقمالطالب','studentcode','code','id'],
+        password:['كلمهالسر','كلمةالسر','الرقمالسري','password','pass'],
+        name:['الاسم','اسمالطالب','الطالب','name','studentname'],
+        group:['المجموعه','مجموعة','الفريق','الفصل','group','team','class']
+      };
+      const found = {};
+      Object.entries(aliases).forEach(([key,names]) => {
+        const index = first.findIndex(cell => names.some(name => cell === normalizeExcelHeader(name) || cell.includes(normalizeExcelHeader(name))));
+        if (index >= 0) found[key] = index;
+      });
+      const hasHeader = Object.keys(found).length >= 2;
+      return {
+        hasHeader,
+        code: found.code ?? 0,
+        password: found.password ?? 1,
+        name: found.name ?? 2,
+        group: found.group ?? 3
+      };
+    }
+
+    async function readExcelStudents(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      if (typeof XLSX === 'undefined') {
+        showExcelImportStatus(
+          'تعذر تحميل مكتبة Excel. تحقق من اتصال الإنترنت ثم أعد فتح الصفحة.',
+          'error'
+        );
+        return;
+      }
+
+      clearExcelImportStatus();
+
+      showExcelImportStatus(
+        'جاري قراءة الأعمدة A و B و C و D فقط…',
+        'info'
+      );
+
+      document.getElementById('excelImportResults').style.display = 'none';
+
+      try {
+        const buffer = await file.arrayBuffer();
+
+        const workbook = XLSX.read(buffer, {
+          type: 'array'
+        });
+
+        if (!workbook.SheetNames.length) {
+          throw new Error('الملف لا يحتوي على ورقة بيانات.');
+        }
+
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        let rows = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+          defval: '',
+          raw: false
+        });
+
+        rows = rows.filter(row =>
+          Array.isArray(row) &&
+          [row[0], row[1], row[2], row[3]]
+            .some(cell => clean(cell))
+        );
+
+        if (!rows.length) {
+          throw new Error('ملف Excel فارغ.');
+        }
+
+        excelImportStudents = [];
+
+        /*
+          النظام ينظر إلى أول 4 أعمدة فقط:
+
+          A = الكود
+          B = كلمة السر
+          C = اسم الطالب
+          D = المجموعة
+
+          E وما بعده:
+          لا تتم قراءته
+          لا يتم إرساله
+          لا يتم تعديله
+          لا يتم النظر إليه نهائيًا
+        */
+
+        for (let i = 0; i < rows.length; i++) {
+
+          const row = rows[i];
+
+          let code = clean(row[0]);
+          let password = clean(row[1]);
+          let name = clean(row[2]);
+          let group = clean(row[3]);
+
+          const firstFourText = [
+            code,
+            password,
+            name,
+            group
+          ]
+          .join(' ')
+          .toLowerCase();
+
+          if (
+            i === 0 &&
+            (
+              firstFourText.includes('الكود') ||
+              firstFourText.includes('كلمة السر') ||
+              firstFourText.includes('كلمه السر') ||
+              firstFourText.includes('الاسم') ||
+              firstFourText.includes('اسم الطالب') ||
+              firstFourText.includes('المجموعة') ||
+              firstFourText.includes('المجموعه')
+            )
+          ) {
+            continue;
+          }
+
+          if (!name) {
+            continue;
+          }
+
+          if (
+            !/^\d{4,5}$/.test(code) ||
+            students.some(student => clean(student.code) === code) ||
+            excelImportStudents.some(student => clean(student.code) === code)
+          ) {
+            code = randomImportCode(5);
+          }
+
+          if (!/^\d{4}$/.test(password)) {
+            password = randomImportPassword();
+          }
+
+          excelImportStudents.push({
+            code: code,
+            password: password,
+            name: name,
+            group: group
+          });
+        }
+
+        const seen = new Set();
+
+        excelImportStudents = excelImportStudents.filter(student => {
+          const key =
+            normalizeSearch(student.name) +
+            '|' +
+            clean(student.code);
+
+          if (seen.has(key)) {
+            return false;
+          }
+
+          seen.add(key);
+          return true;
+        });
+
+        if (!excelImportStudents.length) {
+          throw new Error(
+            'لم يتم العثور على طلاب. تأكد أن اسم الطالب موجود في العمود C.'
+          );
+        }
+
+        renderExcelImportPreview();
+
+        document.getElementById('excelImportResults').style.display = 'block';
+
+        showExcelImportStatus(
+          'تمت قراءة ' +
+          excelImportStudents.length +
+          ' طالب من الأعمدة A:B:C:D فقط. الأعمدة E وما بعدها تم تجاهلها بالكامل.',
+          'success'
+        );
+
+      } catch (error) {
+        console.error(error);
+
+        excelImportStudents = [];
+
+        showExcelImportStatus(
+          error.message || 'تعذر قراءة ملف Excel.',
+          'error'
+        );
+      }
+    }
+
+    function renderExcelImportPreview() {
+      const tbody = document.getElementById('excelPreviewBody');
+      tbody.innerHTML = excelImportStudents.map((student,index) => `
+        <tr>
+          <td>${index+1}</td>
+          <td><input inputmode="numeric" maxlength="5" value="${escapeHTML(student.code)}" oninput="updateExcelImportField(${index},'code',this.value,this)"></td>
+          <td><input inputmode="numeric" maxlength="4" value="${escapeHTML(student.password)}" oninput="updateExcelImportField(${index},'password',this.value,this)"></td>
+          <td><input value="${escapeHTML(student.name)}" oninput="updateExcelImportField(${index},'name',this.value,this)"></td>
+          <td><input value="${escapeHTML(student.group)}" oninput="updateExcelImportField(${index},'group',this.value,this)"></td>
+          <td><button class="excel-row-remove" type="button" onclick="removeExcelImportStudent(${index})" aria-label="حذف">×</button></td>
+        </tr>
+      `).join('');
+      updateExcelImportSummary();
+    }
+
+    function updateExcelImportField(index, field, value, input) {
+      if (!excelImportStudents[index]) return;
+      let cleaned = clean(value);
+      if (field === 'code') {
+        cleaned = cleaned.replace(/\D/g,'').slice(0,5);
+        if (input) input.value = cleaned;
+      }
+      if (field === 'password') {
+        cleaned = cleaned.replace(/\D/g,'').slice(0,4);
+        if (input) input.value = cleaned;
+      }
+      excelImportStudents[index][field] = cleaned;
+      updateExcelImportSummary();
+    }
+
+    function removeExcelImportStudent(index) {
+      if (excelImportBusy) return;
+      excelImportStudents.splice(index,1);
+      renderExcelImportPreview();
+    }
+
+    function generateMissingExcelCredentials() {
+      if (excelImportBusy) return;
+      excelImportStudents.forEach(student => {
+        if (!/^\d{4,5}$/.test(student.code) || students.some(s => s.code === student.code)) {
+          student.code = randomImportCode(5);
+        }
+        if (!/^\d{4}$/.test(student.password)) student.password = randomImportPassword();
+      });
+      renderExcelImportPreview();
+      showExcelImportStatus('تم إنشاء الأكواد وكلمات السر الناقصة.', 'success');
+    }
+
+    function updateExcelImportSummary() {
+      const ready = excelImportStudents.filter(item =>
+        clean(item.name) &&
+        clean(item.group) &&
+        /^\d{4,5}$/.test(clean(item.code)) &&
+        /^\d{4}$/.test(clean(item.password))
+      ).length;
+      const groups = new Set(excelImportStudents.map(item => clean(item.group)).filter(Boolean));
+      document.getElementById('excelTotalCount').textContent = excelImportStudents.length.toLocaleString('ar-SA');
+      document.getElementById('excelReadyCount').textContent = ready.toLocaleString('ar-SA');
+      document.getElementById('excelGroupCount').textContent = groups.size.toLocaleString('ar-SA');
+    }
+
+    function setExcelImportProgress(done, total) {
+      const percent = total ? Math.round(done / total * 100) : 0;
+      document.getElementById('excelProgress').classList.add('show');
+      document.getElementById('excelProgressFill').style.width = percent + '%';
+      document.getElementById('excelProgressText').textContent = done + ' من ' + total + ' — ' + percent + '%';
+    }
+
+    async function addAllExcelStudents() {
+      if (excelImportBusy) return;
+      if (!ensureScriptUrl()) return;
+      if (!excelImportStudents.length) {
+        showExcelImportStatus('ارفع ملف Excel أولاً.', 'error');
+        return;
+      }
+
+      // التحقق قبل البدء، بنفس متطلبات النموذج الحالي
+      for (let i=0; i<excelImportStudents.length; i++) {
+        const student = excelImportStudents[i];
+        if (!student.code || !student.password || !student.name || !student.group) {
+          showExcelImportStatus('يوجد صف ناقص. أكمل الكود وكلمة السر والاسم والمجموعة قبل الإضافة.', 'error');
+          return;
+        }
+        if (!/^\d{4,5}$/.test(student.code)) {
+          showExcelImportStatus('كود الطالب "' + student.name + '" يجب أن يكون 4 أو 5 أرقام.', 'error');
+          return;
+        }
+        if (!/^\d{4}$/.test(student.password)) {
+          showExcelImportStatus('كلمة سر الطالب "' + student.name + '" يجب أن تكون 4 أرقام.', 'error');
+          return;
+        }
+      }
+
+      excelImportBusy = true;
+      const addButton = document.getElementById('excelAddAllBtn');
+      addButton.disabled = true;
+      addButton.textContent = 'جاري إضافة الطلاب…';
+      setExcelImportProgress(0, excelImportStudents.length);
+
+      let added = 0;
+      let skipped = 0;
+      let failed = 0;
+      const failureNames = [];
+
+      try {
+        // نستخدم نفس action=add الحالي لتجنب أي تغيير أو اعتماد على Apps Script جديد.
+        for (let i=0; i<excelImportStudents.length; i++) {
+          const student = excelImportStudents[i];
+
+          // إذا ظهر تكرار مع القائمة الحالية بعد تحميل الصفحة، نعطيه كودًا جديدًا.
+          if (students.some(s => clean(s.code) === clean(student.code))) {
+            const freshCode = randomImportCode(5);
+            if (freshCode) student.code = freshCode;
+          }
+
+          const data = new URLSearchParams();
+          data.append('code', clean(student.code));
+          data.append('password', clean(student.password));
+          data.append('name', clean(student.name));
+          data.append('group', clean(student.group));
+          data.append('force', 'false');
+          data.append('action', 'add');
+
+          try {
+            const response = await fetch(SCRIPT_URL, { method:'POST', body:data });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const result = await response.json();
+
+            if (result.result === 'exists') {
+              // محاولة واحدة بكود جديد بدل إيقاف الملف كله.
+              const freshCode = randomImportCode(5);
+              if (!freshCode) {
+                skipped++;
+              } else {
+                student.code = freshCode;
+                const retryData = new URLSearchParams();
+                retryData.append('code', student.code);
+                retryData.append('password', student.password);
+                retryData.append('name', student.name);
+                retryData.append('group', student.group);
+                retryData.append('force', 'false');
+                retryData.append('action', 'add');
+                const retryResponse = await fetch(SCRIPT_URL, { method:'POST', body:retryData });
+                if (!retryResponse.ok) throw new Error('HTTP ' + retryResponse.status);
+                const retryResult = await retryResponse.json();
+                if (retryResult.result === 'exists' || retryResult.result === 'error') skipped++;
+                else added++;
+              }
+            } else if (result.result === 'error') {
+              failed++;
+              failureNames.push(student.name);
+            } else {
+              added++;
+            }
+          } catch (error) {
+            console.error('Excel student import error:', student, error);
+            failed++;
+            failureNames.push(student.name);
+          }
+
+          setExcelImportProgress(i+1, excelImportStudents.length);
+          showExcelImportStatus(
+            'جاري الإضافة… تمت إضافة ' + added +
+            (skipped ? '، تم تخطي ' + skipped : '') +
+            (failed ? '، تعذر ' + failed : ''),
+            'info'
+          );
+        }
+
+        await loadStudents();
+
+        if (failed === 0) {
+          showExcelImportStatus(
+            'اكتملت العملية ✅ تمت إضافة ' + added + ' طالب' +
+            (skipped ? '، وتم تخطي ' + skipped + ' سجل مكرر.' : '.'),
+            'success'
+          );
+          showToast('تمت إضافة طلاب Excel: ' + added, 'success');
+        } else {
+          showExcelImportStatus(
+            'انتهت العملية. تمت إضافة ' + added + ' طالب، وتم تخطي ' + skipped +
+            '، وتعذر إضافة ' + failed + ' طالب' +
+            (failureNames.length ? ': ' + failureNames.slice(0,5).join('، ') : ''),
+            'error'
+          );
+          showToast('تمت إضافة ' + added + ' طالب مع وجود بعض الأخطاء', 'error');
+        }
+      } finally {
+        excelImportBusy = false;
+        addButton.disabled = false;
+        addButton.textContent = 'إضافة جميع الطلاب';
+        renderExcelImportPreview();
+      }
+    }
+
 
     function parseCSV(text) {
       const rows=[]; let row=[]; let cell=''; let quoted=false;
